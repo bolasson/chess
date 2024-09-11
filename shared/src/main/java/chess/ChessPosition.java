@@ -31,6 +31,23 @@ public class ChessPosition {
         return result;
     }
 
+    @Override
+    public String toString() {
+        String returnValue = "";
+        switch (col) {
+            case 1 -> returnValue = "a";
+            case 2 -> returnValue = "b";
+            case 3 -> returnValue = "c";
+            case 4 -> returnValue = "d";
+            case 5 -> returnValue = "e";
+            case 6 -> returnValue = "f";
+            case 7 -> returnValue = "g";
+            case 8 -> returnValue = "h";
+        };
+        returnValue += String.valueOf(row);
+        return returnValue;
+    }
+
     /**
      * @return which row this position is in
      * 1 codes for the bottom row
