@@ -18,6 +18,22 @@ public class ChessPiece {
         this.type = type;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChessPiece piece = (ChessPiece) o;
+        return type == piece.type && color == piece.color;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type.hashCode();
+        result = 31 * result + color.hashCode();
+        return result;
+    }
+
     /**
      * The various different chess piece options
      */
