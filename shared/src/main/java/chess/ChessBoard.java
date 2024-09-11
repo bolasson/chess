@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Arrays;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -8,11 +10,32 @@ package chess;
  */
 public class ChessBoard {
 
-    public ChessPiece[][] board = new ChessPiece[8][8];
+    public ChessPiece[][] board;
 
     public ChessBoard() {
-        
+        this.board = new ChessPiece[8][8];
     }
+
+    public static void main (String[] args) {
+        ChessBoard chessBoard = new ChessBoard();
+        System.out.println(chessBoard.displayBoard());
+        chessBoard.resetBoard();
+        System.out.println(chessBoard.displayBoard());
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChessBoard that)) return false;
+
+        return Arrays.deepEquals(board, that.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(board);
+    }
+
 
     /**
      * Adds a chess piece to the chessboard
@@ -40,6 +63,8 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
+        // Clear the board
+        board = new ChessPiece[8][8];
         // Instantiate all the pawns
         for (int i = 1; i <= 8; i++) {
             ChessPosition whitePawnPosition = new ChessPosition(2,i);
@@ -47,47 +72,13 @@ public class ChessBoard {
             addPiece(whitePawnPosition, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
             addPiece(blackPawnPosition, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
         }
-
-        // Instantiate white piece positions
-        ChessPosition whiteRookLeft = new ChessPosition(1,1);
-        ChessPosition whiteKnightLeft = new ChessPosition(1,2);
-        ChessPosition whiteBishopLeft = new ChessPosition(1,3);
-        ChessPosition whiteQueen = new ChessPosition(1,4);
-        ChessPosition whiteKing = new ChessPosition(1,5);
-        ChessPosition whiteBishopRight = new ChessPosition(1,6);
-        ChessPosition whiteKnightRight = new ChessPosition(1,7);
-        ChessPosition whiteRookRight = new ChessPosition(1,8);
-        // Instantiate white pieces
-        addPiece(whiteRookLeft, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
-        addPiece(whiteKnightLeft, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
-        addPiece(whiteBishopLeft, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
-        addPiece(whiteQueen, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN));
-        addPiece(whiteKing, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
-        addPiece(whiteBishopRight, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
-        addPiece(whiteKnightRight, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
-        addPiece(whiteRookRight, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
-        // Instantiate black piece positions
-        ChessPosition blackRookLeft = new ChessPosition(8,1);
-        ChessPosition blackKnightLeft = new ChessPosition(8,2);
-        ChessPosition blackBishopLeft = new ChessPosition(8,3);
-        ChessPosition blackQueen = new ChessPosition(8,4);
-        ChessPosition blackKing = new ChessPosition(8,5);
-        ChessPosition blackBishopRight = new ChessPosition(8,6);
-        ChessPosition blackKnightRight = new ChessPosition(8,7);
-        ChessPosition blackRookRight = new ChessPosition(8,8);
-        // Instantiate black pieces
-        addPiece(blackRookLeft, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
-        addPiece(blackKnightLeft, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
-        addPiece(blackBishopLeft, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
-        addPiece(blackQueen, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN));
-        addPiece(blackKing, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
-        addPiece(blackBishopRight, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
-        addPiece(blackKnightRight, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
-        addPiece(blackRookRight, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
+        // Instantiate special pieces for each team
+        instantiateSpecialPieces(ChessGame.TeamColor.WHITE);
+        instantiateSpecialPieces(ChessGame.TeamColor.BLACK);
     }
 
-    // Helper function for resetting the board
-    private void InstantiateSpecialPieces(ChessGame.TeamColor color) {
+    private void instantiateSpecialPieces(ChessGame.TeamColor color) {
+        // List of the unique pieces to instantiate, from right to left
         ChessPiece.PieceType[] pieces = {
                 ChessPiece.PieceType.ROOK,
                 ChessPiece.PieceType.KNIGHT,
@@ -95,16 +86,44 @@ public class ChessBoard {
                 ChessPiece.PieceType.QUEEN,
                 ChessPiece.PieceType.KING
         };
-
+        // Determine which row to instantiate on based on team color
+        int row = color == ChessGame.TeamColor.WHITE ? 1 : 8;
+        // Iterate through the pieces to add
         for (int i = 1; i <= pieces.length; i++) {
             // Instantiate the corresponding piece in the list pieces at the specified position
-            ChessPosition position = new ChessPosition(1,i);
+            ChessPosition position = new ChessPosition(row,i);
             addPiece(position, new ChessPiece(color, pieces[i - 1]));
-            // Instantiate the matching pieces on the opposite side of the board
+            // Instantiate the matching pieces on the opposite side of the board, if applicable
             if (i <= 3) {
-                ChessPosition mirrorPosition = new ChessPosition(1,9-i);
+                ChessPosition mirrorPosition = new ChessPosition(row,9-i);
                 addPiece(mirrorPosition, new ChessPiece(color, pieces[i - 1]));
             }
         }
     }
+
+    public String displayBoard() {
+        StringBuilder boardString = new StringBuilder();
+
+        // Create the board from top to bottom (row 8 to row 1)
+        for (int row = 7; row >= 0; row--) {
+            boardString.append(row+1).append(" "); // Add row number
+
+            // Create each column, wrapping each piece with '|'
+            for (int col = 0; col < 8; col++) {
+                ChessPiece piece = board[row][col];
+                if (piece == null) {
+                    boardString.append("| "); // Empty space represented by a space between '|'
+                } else {
+                    boardString.append("|").append(piece.toString());
+                }
+            }
+            boardString.append("|\n"); // Close the row with '|' and add newline after each row
+        }
+
+        // Add column labels at the bottom
+        boardString.append("   a b c d e f g h\n");
+
+        return boardString.toString();
+    }
+
 }
