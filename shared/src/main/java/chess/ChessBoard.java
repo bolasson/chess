@@ -13,14 +13,13 @@ public class ChessBoard {
     public ChessPiece[][] board;
 
     public ChessBoard() {
-        this.board = new ChessPiece[8][8];
+        board = new ChessPiece[8][8];
+        resetBoard();
     }
 
     public static void main (String[] args) {
         ChessBoard chessBoard = new ChessBoard();
-        System.out.println(chessBoard.displayBoard());
-        chessBoard.resetBoard();
-        System.out.println(chessBoard.displayBoard());
+        System.out.println(DisplayGame.displayBoard(chessBoard.getBoard()));
     }
 
     @Override
@@ -56,6 +55,10 @@ public class ChessBoard {
      */
     public ChessPiece getPiece(ChessPosition position) {
         return board[position.getRow()-1][position.getColumn()-1];
+    }
+
+    public ChessPiece[][] getBoard(){
+        return board;
     }
 
     /**
@@ -100,30 +103,4 @@ public class ChessBoard {
             }
         }
     }
-
-    public String displayBoard() {
-        StringBuilder boardString = new StringBuilder();
-
-        // Create the board from top to bottom (row 8 to row 1)
-        for (int row = 7; row >= 0; row--) {
-            boardString.append(row+1).append(" "); // Add row number
-
-            // Create each column, wrapping each piece with '|'
-            for (int col = 0; col < 8; col++) {
-                ChessPiece piece = board[row][col];
-                if (piece == null) {
-                    boardString.append("| "); // Empty space represented by a space between '|'
-                } else {
-                    boardString.append("|").append(piece.toString());
-                }
-            }
-            boardString.append("|\n"); // Close the row with '|' and add newline after each row
-        }
-
-        // Add column labels at the bottom
-        boardString.append("   a b c d e f g h\n");
-
-        return boardString.toString();
-    }
-
 }

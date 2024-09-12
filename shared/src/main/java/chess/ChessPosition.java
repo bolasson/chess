@@ -35,14 +35,14 @@ public class ChessPosition {
     public String toString() {
         String returnValue = "";
         switch (col) {
-            case 1 -> returnValue = "a";
-            case 2 -> returnValue = "b";
-            case 3 -> returnValue = "c";
-            case 4 -> returnValue = "d";
-            case 5 -> returnValue = "e";
-            case 6 -> returnValue = "f";
-            case 7 -> returnValue = "g";
-            case 8 -> returnValue = "h";
+            case 1 -> returnValue = "A";
+            case 2 -> returnValue = "B";
+            case 3 -> returnValue = "C";
+            case 4 -> returnValue = "D";
+            case 5 -> returnValue = "E";
+            case 6 -> returnValue = "F";
+            case 7 -> returnValue = "G";
+            case 8 -> returnValue = "H";
         };
         returnValue += String.valueOf(row);
         return returnValue;
