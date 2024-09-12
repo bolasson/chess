@@ -7,11 +7,11 @@ public interface PieceMovesCalculator {
 
     Collection<ChessMove> getValidMoves(ChessPosition position, ChessBoard board);
 
-    default boolean positionIsAvailable(ChessPosition position, ChessBoard board) {
+    private boolean positionIsAvailable(ChessPosition position, ChessBoard board) {
         return board.getPiece(position) == null;
     }
 
-    default boolean positionHasOpponent(ChessPosition position, ChessBoard board, ChessGame.TeamColor color) {
+    private boolean positionHasOpponent(ChessPosition position, ChessBoard board, ChessGame.TeamColor color) {
         return board.getPiece(position).getTeamColor() != color;
     }
 
@@ -29,15 +29,16 @@ public interface PieceMovesCalculator {
         int colIndex = currentPosition.getColumn();
         ChessGame.TeamColor color = board.getPiece(currentPosition).getTeamColor();
         // Direction format is [+1=Up|-1=Down,+1=Right|-1=Left]
-        while (rowIndex > 1 && rowIndex < 8 && colIndex > 1 && colIndex < 8) {
+        while (isWithinBounds(rowIndex, colIndex, direction)) {
             rowIndex += direction[0];
             colIndex += direction[1];
             ChessPosition endPosition = new ChessPosition(rowIndex,colIndex);
+            if (limited) break;
             if (positionIsAvailable(endPosition, board)) {
                 ChessMove move = new ChessMove(currentPosition,endPosition, promotion);
                 validMoves.add(move);
             } else if (positionHasOpponent(endPosition, board, color)) {
-                ChessMove move = new ChessMove(currentPosition,endPosition, promotion);
+                ChessMove move = new ChessMove(currentPosition, endPosition, promotion);
                 validMoves.add(move);
                 break;
             } else {
@@ -45,5 +46,13 @@ public interface PieceMovesCalculator {
             }
         }
         return validMoves;
+    }
+
+    private boolean isWithinBounds(int row, int col, int[] direction) {
+        // Is it within the vertical bounds of the board
+        if (direction[0] + row > 8 || direction[0] + row < 1) return false;
+        // Is it within the horizontal bounds of the board
+        if (direction[1] + col > 8 || direction[1] + col < 1) return false;
+        return true;
     }
 }
