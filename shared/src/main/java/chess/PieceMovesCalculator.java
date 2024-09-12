@@ -7,23 +7,19 @@ public interface PieceMovesCalculator {
 
     Collection<ChessMove> getValidMoves(ChessPosition position, ChessBoard board);
 
-    private boolean positionIsAvailable(ChessPosition position, ChessBoard board) {
+    default boolean positionIsAvailable(ChessPosition position, ChessBoard board) {
         return board.getPiece(position) == null;
     }
 
-    private boolean positionHasOpponent(ChessPosition position, ChessBoard board, ChessGame.TeamColor color) {
+    default boolean positionHasOpponent(ChessPosition position, ChessBoard board, ChessGame.TeamColor color) {
         return board.getPiece(position).getTeamColor() != color;
     }
 
     default Collection<ChessMove> getMovesInDirection(ChessPosition currentPosition, int[] direction, ChessBoard board) {
-        return getMovesInDirection(currentPosition, direction, board,false, null);
+        return getMovesInDirection(currentPosition, direction, board,false);
     }
 
     default Collection<ChessMove> getMovesInDirection(ChessPosition currentPosition, int[] direction, ChessBoard board, boolean limited) {
-        return getMovesInDirection(currentPosition, direction, board, limited, null);
-    }
-
-    default Collection<ChessMove> getMovesInDirection(ChessPosition currentPosition, int[] direction, ChessBoard board, boolean limited, ChessPiece.PieceType promotion) {
         Collection<ChessMove> validMoves = new ArrayList<>();
         int rowIndex = currentPosition.getRow();
         int colIndex = currentPosition.getColumn();
@@ -33,26 +29,25 @@ public interface PieceMovesCalculator {
             rowIndex += direction[0];
             colIndex += direction[1];
             ChessPosition endPosition = new ChessPosition(rowIndex,colIndex);
-            if (limited) break;
             if (positionIsAvailable(endPosition, board)) {
-                ChessMove move = new ChessMove(currentPosition,endPosition, promotion);
+                ChessMove move = new ChessMove(currentPosition,endPosition, null);
                 validMoves.add(move);
             } else if (positionHasOpponent(endPosition, board, color)) {
-                ChessMove move = new ChessMove(currentPosition, endPosition, promotion);
+                ChessMove move = new ChessMove(currentPosition, endPosition, null);
                 validMoves.add(move);
                 break;
             } else {
                 break;
             }
+            if (limited) break;
         }
         return validMoves;
     }
 
     private boolean isWithinBounds(int row, int col, int[] direction) {
-        // Is it within the vertical bounds of the board
+        // Will the next move be within the vertical bounds of the board
         if (direction[0] + row > 8 || direction[0] + row < 1) return false;
-        // Is it within the horizontal bounds of the board
-        if (direction[1] + col > 8 || direction[1] + col < 1) return false;
-        return true;
+        // Will the next move be within the horizontal bounds of the board
+        return !(direction[1] + col > 8 || direction[1] + col < 1);
     }
 }

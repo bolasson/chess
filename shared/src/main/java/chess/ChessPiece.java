@@ -71,6 +71,7 @@ public class ChessPiece {
         PieceMovesCalculator piece;
         switch (this.type) {
             case PieceType.QUEEN -> piece = new QueenMovesCalculator();
+            case PieceType.KING -> piece = new KingMovesCalculator();
             case PieceType.BISHOP -> piece = new BishopMovesCalculator();
             case PieceType.ROOK -> piece = new RookMovesCalculator();
             default -> throw new RuntimeException("Unknown piece type");
