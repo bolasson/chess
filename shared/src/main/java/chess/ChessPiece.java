@@ -68,7 +68,23 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        PieceMovesCalculator piece;
+
+        // Determine which piece to use based on its type
+        switch (this.type) {
+//            case KING -> piece = new King();
+//            case QUEEN -> piece = new Queen();
+            case PieceType.BISHOP -> piece = new BishopMovesCalculator();
+//            case KNIGHT -> piece = new Knight();
+//            case ROOK -> piece = new Rook();
+//            case PAWN -> piece = new Pawn();
+            default -> throw new RuntimeException("Unknown piece type");
+        }
+
+        System.out.println(DisplayGame.displayBoard(board.getBoard()));
+
+        // Delegate move calculation to the piece's specific move logic
+        return piece.getValidMoves(myPosition, board);
     }
 
     @Override

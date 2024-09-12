@@ -2,14 +2,13 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public interface PieceMovesCalculator {
 
     Collection<ChessMove> getValidMoves(ChessPosition position, ChessBoard board);
 
     default boolean positionIsAvailable(ChessPosition position, ChessBoard board) {
-        return board.getPiece(position) != null;
+        return board.getPiece(position) == null;
     }
 
     default boolean positionHasOpponent(ChessPosition position, ChessBoard board, ChessGame.TeamColor color) {
@@ -30,13 +29,10 @@ public interface PieceMovesCalculator {
         int colIndex = currentPosition.getColumn();
         ChessGame.TeamColor color = board.getPiece(currentPosition).getTeamColor();
         // Direction format is [+1=Up|-1=Down,+1=Right|-1=Left]
-        while (true) {
-            // Check if the next move is off the board
-            if (direction[0] == 1 && rowIndex == 8) break;
-            if (direction[0] == -1 && rowIndex == 1) break;
-            if (direction[1] == 1 && rowIndex == 8) break;
-            if (direction[1] == -1 && rowIndex == 1) break;
-            ChessPosition endPosition = new ChessPosition(rowIndex+direction[0],colIndex+direction[1]);
+        while (rowIndex > 1 && rowIndex < 8 && colIndex > 1 && colIndex < 8) {
+            rowIndex += direction[0];
+            colIndex += direction[1];
+            ChessPosition endPosition = new ChessPosition(rowIndex,colIndex);
             if (positionIsAvailable(endPosition, board)) {
                 ChessMove move = new ChessMove(currentPosition,endPosition, promotion);
                 validMoves.add(move);
