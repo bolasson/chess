@@ -75,6 +75,7 @@ public class ChessPiece {
             case PieceType.BISHOP -> piece = new BishopMovesCalculator();
             case PieceType.ROOK -> piece = new RookMovesCalculator();
             case PieceType.KNIGHT -> piece = new KnightMovesCalculator();
+            case PieceType.PAWN -> piece = new PawnMovesCalculator();
             default -> throw new RuntimeException("Unknown piece type");
         }
         System.out.println(DisplayGame.displayBoard(board.getBoard()));
