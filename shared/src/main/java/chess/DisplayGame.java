@@ -10,7 +10,7 @@ public class DisplayGame {
             for (int col = 0; col < 8; col++) {
                 ChessPiece piece = board[row][col];
                 if (piece == null) {
-                    boardString.append("| "); // Empty space represented by a space between '|'
+                    boardString.append("|   "); // Empty space represented by a space between '|'
                 } else {
                     boardString.append("|").append(piece.toString());
                 }
@@ -18,7 +18,7 @@ public class DisplayGame {
             boardString.append("|\n"); // Close the row with '|' and add newline after each row
         }
         // Add column labels at the bottom
-        boardString.append("   A B C D E F G H\n");
+        boardString.append("    A   B   C   D   E   F   G   H\n");
         return boardString.toString();
     }
 }

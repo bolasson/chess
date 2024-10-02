@@ -7,12 +7,14 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
 
     private Collection<ChessMove> validMoves = new ArrayList<>();
     private ChessPosition startPosition;
+    private ChessBoard board;
     private ChessPosition targetPosition;
     private ChessGame.TeamColor color;
 
-    public Collection<ChessMove> getValidMoves(ChessPosition position, ChessBoard board) {
-        color = board.getPiece(position).getTeamColor();
+    public Collection<ChessMove> getValidMoves(ChessPosition position, ChessBoard selectedBoard) {
+        board = selectedBoard;
         startPosition = position;
+        color = board.getPiece(startPosition).getTeamColor();
         int direction = color == ChessGame.TeamColor.WHITE ? 1 : -1;
         // Move the pawn one forward if possible
         ChessPosition oneForward = new ChessPosition(startPosition.getRow() + direction, startPosition.getColumn());
@@ -25,6 +27,7 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
         if (isOnStartRow() && positionIsAvailable(targetPosition, board) && positionIsAvailable(oneForward, board)) {
             addPawnMoves();
         }
+
         // Check the left attack position
         targetPosition = new ChessPosition(startPosition.getRow() + direction, startPosition.getColumn() - 1);
         if (isWithinBounds() && !positionIsAvailable(targetPosition, board) && positionHasOpponent(targetPosition, board, color)) addPawnMoves();

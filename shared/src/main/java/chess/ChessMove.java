@@ -32,8 +32,8 @@ public class ChessMove {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ChessMove chessMove = (ChessMove) o;
-        return startPosition.equals(chessMove.startPosition) && endPosition.equals(chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
+        ChessMove move = (ChessMove) o;
+        return startPosition.equals(move.startPosition)&&endPosition.equals(move.endPosition) && promotionPiece == move.promotionPiece;
     }
 
     @Override

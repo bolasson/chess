@@ -78,19 +78,18 @@ public class ChessPiece {
             case PieceType.PAWN -> piece = new PawnMovesCalculator();
             default -> throw new RuntimeException("Unknown piece type");
         }
-        System.out.println(DisplayGame.displayBoard(board.getBoard()));
         return piece.getValidMoves(myPosition, board);
     }
 
     @Override
     public String toString() {
         return switch (this.type) {
-            case PAWN -> color == ChessGame.TeamColor.WHITE ? "P" : "p";
-            case KNIGHT -> color == ChessGame.TeamColor.WHITE ? "N" : "n";
-            case BISHOP -> color == ChessGame.TeamColor.WHITE ? "B" : "b";
-            case ROOK -> color == ChessGame.TeamColor.WHITE ? "R" : "r";
-            case QUEEN -> color == ChessGame.TeamColor.WHITE ? "Q" : "q";
-            case KING -> color == ChessGame.TeamColor.WHITE ? "K" : "k";
+            case PAWN -> color == ChessGame.TeamColor.WHITE ? "♙" : "♟";
+            case KNIGHT -> color == ChessGame.TeamColor.WHITE ? "♘" : "♞";
+            case BISHOP -> color == ChessGame.TeamColor.WHITE ? "♗" : "♝";
+            case ROOK -> color == ChessGame.TeamColor.WHITE ? "♖" : "♜";
+            case QUEEN -> color == ChessGame.TeamColor.WHITE ? "♕" : "♛";
+            case KING -> color == ChessGame.TeamColor.WHITE ? "♔" : "♚";
         };
     }
 }
