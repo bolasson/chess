@@ -39,14 +39,14 @@ public interface PieceMovesCalculator {
             } else {
                 break;
             }
-            if (limited) break;
+            if (limited) { break; }
         }
         return validMoves;
     }
 
     private boolean isWithinBounds(int row, int col, int[] direction) {
         // Will the next move be within the vertical bounds of the board
-        if (direction[0] + row > 8 || direction[0] + row < 1) return false;
+        if (direction[0] + row > 8 || direction[0] + row < 1) { return false; }
         // Will the next move be within the horizontal bounds of the board
         return !(direction[1] + col > 8 || direction[1] + col < 1);
     }

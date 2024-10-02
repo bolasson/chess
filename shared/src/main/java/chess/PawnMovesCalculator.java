@@ -30,10 +30,14 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
 
         // Check the left attack position
         targetPosition = new ChessPosition(startPosition.getRow() + direction, startPosition.getColumn() - 1);
-        if (isWithinBounds() && !positionIsAvailable(targetPosition, board) && positionHasOpponent(targetPosition, board, color)) addPawnMoves();
-        // Check the right attack position
+        if (isWithinBounds() && !positionIsAvailable(targetPosition, board) && positionHasOpponent(targetPosition, board, color)) {
+            addPawnMoves();
+        }
+            // Check the right attack position
         targetPosition = new ChessPosition(startPosition.getRow() + direction, startPosition.getColumn() + 1);
-        if (isWithinBounds() && !positionIsAvailable(targetPosition, board) && positionHasOpponent(targetPosition, board, color)) addPawnMoves();
+        if (isWithinBounds() && !positionIsAvailable(targetPosition, board) && positionHasOpponent(targetPosition, board, color)) {
+            addPawnMoves();
+        }
         return validMoves;
     }
 
@@ -50,14 +54,13 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
 
     private boolean isWithinBounds() {
         // Will the next move be within the vertical bounds of the board
-        if (targetPosition.getRow() > 8 || targetPosition.getRow() < 1) return false;
+        if (targetPosition.getRow() > 8 || targetPosition.getRow() < 1) { return false; }
         // Will the next move be within the horizontal bounds of the board
         return !(targetPosition.getColumn() > 8 || targetPosition.getColumn() < 1);
     }
 
     private boolean isOnStartRow() {
-        if (color == ChessGame.TeamColor.WHITE && startPosition.getRow() == 2) return true;
-        if (color == ChessGame.TeamColor.BLACK && startPosition.getRow() == 7) return true;
-        return false;
+        if (color == ChessGame.TeamColor.WHITE && startPosition.getRow() == 2) { return true; }
+        return (color == ChessGame.TeamColor.BLACK && startPosition.getRow() == 7);
     }
 }
