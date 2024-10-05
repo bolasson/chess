@@ -19,7 +19,16 @@ public class ChessBoard {
     }
 
     public ChessBoard(ChessBoard chessBoard) {
-        board = chessBoard.getBoard();
+        board = new ChessPiece[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessPiece piece = chessBoard.board[i][j];
+                if (piece != null) {
+                    ChessPiece clonedPiece = new ChessPiece(piece.getTeamColor(), piece.getPieceType());
+                    board[i][j] = clonedPiece;
+                }
+            }
+        }
     }
 
     public static void main (String[] args) {
@@ -102,10 +111,10 @@ public class ChessBoard {
     public ChessPosition getKingPosition(ChessGame.TeamColor teamColor) {
         ChessPosition kingPosition = null;
         for (int i=1; i < 9; i++) {
-            for (int j=1; j < 9; i++) {
+            for (int j=1; j < 9; j++) {
                 ChessPosition tempPosition = new ChessPosition(i, j);
                 ChessPiece piece = getPiece(tempPosition);
-                if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
+                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
                     kingPosition = tempPosition;
                 }
             }

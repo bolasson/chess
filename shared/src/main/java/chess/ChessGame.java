@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -32,6 +33,7 @@ public class ChessGame {
     public ChessGame() {
         chessBoard = new ChessBoard();
         activeTeamColor = TeamColor.WHITE;
+        DisplayGame.displayBoard(chessBoard.getBoard());
         chessBoard.resetBoard();
     }
 
@@ -71,11 +73,23 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        Collection<ChessMove> moves = chessBoard.getPiece(startPosition).pieceMoves(chessBoard,startPosition);
-        for (ChessMove move : moves) {
-//            ChessBoard tempBoard = chessBoard.copy
+        ChessPiece piece = chessBoard.getPiece(startPosition);
+        if (piece == null) {
+            return new ArrayList<>();
         }
-        throw new RuntimeException("Not implemented");
+        setTeamTurn(piece.getTeamColor());
+        Collection<ChessMove> moves = piece.pieceMoves(chessBoard,startPosition);
+        Collection<ChessMove> validMoves = new ArrayList<ChessMove>();
+        ChessBoard savedBoard = new ChessBoard(getBoard());
+        for (ChessMove move : moves) {
+            setBoard(new ChessBoard(savedBoard));
+            getBoard().makeMove(move);
+            if (!isInCheck(activeTeamColor)) {
+                validMoves.add(move);
+            }
+        }
+        setBoard(savedBoard);
+        return validMoves;
     }
 
     /**
@@ -135,5 +149,45 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return chessBoard;
+    }
+
+    public ChessBoard loadBoard(String boardString) {
+        ChessBoard board = new ChessBoard();
+        String[] rows = boardString.split("\n");
+        for (int row = 0; row < 8; row++) {
+            String[] pieces = rows[7 - row].trim().split("\\|");
+            for (int col = 0; col < 8; col++) {
+                String piece = pieces[col + 1].trim();
+                if (!piece.isEmpty()) {
+                    char pieceType = piece.charAt(0);
+                    TeamColor teamColor = Character.isUpperCase(pieceType) ? TeamColor.WHITE : TeamColor.BLACK;
+                    pieceType = Character.toLowerCase(pieceType);
+                    ChessPiece.PieceType chessPieceType = null;
+                    switch (pieceType) {
+                        case 'p':
+                            chessPieceType = ChessPiece.PieceType.PAWN;
+                            break;
+                        case 'r':
+                            chessPieceType = ChessPiece.PieceType.ROOK;
+                            break;
+                        case 'n', 'h':
+                            chessPieceType = ChessPiece.PieceType.KNIGHT;
+                            break;
+                        case 'b':
+                            chessPieceType = ChessPiece.PieceType.BISHOP;
+                            break;
+                        case 'q':
+                            chessPieceType = ChessPiece.PieceType.QUEEN;
+                            break;
+                        case 'k':
+                            chessPieceType = ChessPiece.PieceType.KING;
+                            break;
+                    }
+                    ChessPiece chessPiece = new ChessPiece(teamColor, chessPieceType);
+                    board.addPiece(new ChessPosition(row + 1, col + 1), chessPiece);
+                }
+            }
+        }
+        return board;
     }
 }
