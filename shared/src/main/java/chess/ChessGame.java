@@ -127,6 +127,17 @@ public class ChessGame {
         return chessBoard.opponentCanAttackPosition(chessBoard.getKingPosition(teamColor), oppositeTeamColor(teamColor));
     }
 
+    public Collection<ChessMove> teamMoveSet(TeamColor teamColor) {
+        Collection<ChessMove> allMoves = new ArrayList<>();
+        for (var position : getBoard().getAllPositions()) {
+            var piece = getBoard().getPiece(position);
+            if (piece != null && piece.getTeamColor() == teamColor) {
+                allMoves.addAll(validMoves(position));
+            }
+        }
+        return allMoves;
+    }
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -134,7 +145,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return isInCheck(teamColor) && teamMoveSet(teamColor).isEmpty();
     }
 
     /**
@@ -145,7 +156,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return !isInCheck(teamColor) && teamMoveSet(teamColor).isEmpty();
     }
 
     /**
