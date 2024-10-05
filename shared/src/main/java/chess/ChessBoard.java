@@ -18,6 +18,10 @@ public class ChessBoard {
         board = new ChessPiece[8][8];
     }
 
+    public ChessBoard(ChessBoard chessBoard) {
+        board = chessBoard.getBoard();
+    }
+
     public static void main (String[] args) {
         ChessBoard chessBoard = new ChessBoard();
         chessBoard.resetBoard();
@@ -57,18 +61,31 @@ public class ChessBoard {
         removePiece(move.getStartPosition());
     }
 
-    public Collection<ChessPiece> getTeamPieces(ChessGame.TeamColor teamColor) {
-        Collection<ChessPiece> pieces = new ArrayList<ChessPiece>();
-        for (int i=1; i < 9; i++) {
-            for (int j=1; j < 9; i++) {
-                ChessPosition tempPosition = new ChessPosition(i, j);
-                ChessPiece piece = getPiece(tempPosition);
-                if (piece.getTeamColor() == teamColor) {
-                    pieces.add(piece);
+    public boolean opponentCanAttackPosition(ChessPosition targetPosition, ChessGame.TeamColor opponentColor) {
+        for (ChessPosition position : getAllPositions()) {
+            ChessPiece piece = getPiece(position);
+            if (piece != null && piece.getTeamColor() == opponentColor) {
+                Collection<ChessMove> potentialMoves = piece.pieceMoves(this, position);
+                if (potentialMoves != null) {
+                    for (ChessMove move : potentialMoves) {
+                        if (move.getEndPosition().equals(targetPosition)) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
-        return pieces;
+        return false;
+    }
+
+    public Collection<ChessPosition> getAllPositions() {
+        Collection<ChessPosition> positions = new ArrayList<>();
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                positions.add(new ChessPosition(row, col));
+            }
+        }
+        return positions;
     }
 
     /**
@@ -82,7 +99,7 @@ public class ChessBoard {
         return board[position.getRow()-1][position.getColumn()-1];
     }
 
-    public ChessPosition GetKingPosition(ChessGame.TeamColor teamColor) {
+    public ChessPosition getKingPosition(ChessGame.TeamColor teamColor) {
         ChessPosition kingPosition = null;
         for (int i=1; i < 9; i++) {
             for (int j=1; j < 9; i++) {

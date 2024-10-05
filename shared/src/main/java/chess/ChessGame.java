@@ -10,17 +10,36 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    private ChessBoard board;
+    private ChessBoard chessBoard;
+    private TeamColor activeTeamColor;
+
+    public ChessGame(ChessBoard board, TeamColor startTeam) {
+        chessBoard = board;
+        activeTeamColor = startTeam;
+    }
+
+    public ChessGame(ChessBoard board) {
+        chessBoard = board;
+        activeTeamColor = TeamColor.WHITE;
+    }
+
+    public ChessGame(TeamColor startTeam) {
+        chessBoard = new ChessBoard();
+        activeTeamColor = startTeam;
+        chessBoard.resetBoard();
+    }
 
     public ChessGame() {
-        board = new ChessBoard();
+        chessBoard = new ChessBoard();
+        activeTeamColor = TeamColor.WHITE;
+        chessBoard.resetBoard();
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return activeTeamColor;
     }
 
     /**
@@ -29,7 +48,11 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        activeTeamColor = team;
+    }
+
+    public TeamColor oppositeTeamColor(TeamColor myTeamColor) {
+        return myTeamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
     }
 
     /**
@@ -48,6 +71,10 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        Collection<ChessMove> moves = chessBoard.getPiece(startPosition).pieceMoves(chessBoard,startPosition);
+        for (ChessMove move : moves) {
+//            ChessBoard tempBoard = chessBoard.copy
+        }
         throw new RuntimeException("Not implemented");
     }
 
@@ -68,7 +95,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return chessBoard.opponentCanAttackPosition(chessBoard.getKingPosition(teamColor), oppositeTeamColor(teamColor));
     }
 
     /**
@@ -98,7 +125,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        this.board = board;
+        chessBoard = board;
     }
 
     /**
@@ -107,6 +134,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        return board;
+        return chessBoard;
     }
 }
