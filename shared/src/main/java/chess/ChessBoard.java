@@ -69,11 +69,10 @@ public class ChessBoard {
             ChessPiece piece = getPiece(position);
             if (piece != null && piece.getTeamColor() == opponentColor) {
                 Collection<ChessMove> potentialMoves = piece.pieceMoves(this, position);
-                if (potentialMoves != null) {
-                    for (ChessMove move : potentialMoves) {
-                        if (move.getEndPosition().equals(targetPosition)) {
-                            return true;
-                        }
+                if (potentialMoves == null) { break; }
+                for (ChessMove move : potentialMoves) {
+                    if (move.getEndPosition().equals(targetPosition)) {
+                        return true;
                     }
                 }
             }
