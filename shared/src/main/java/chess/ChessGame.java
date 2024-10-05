@@ -101,14 +101,14 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece piece = getBoard().getPiece(move.getStartPosition());
         if (piece == null) {
-            throw new InvalidMoveException("Piece does not exist");
+            throw new InvalidMoveException("Illegal Move: Piece does not exist");
         } else if (piece.getTeamColor() != activeTeamColor) {
-            throw new InvalidMoveException("Moving out of turn");
+            throw new InvalidMoveException("Illegal Move: Moving out of turn");
         }
         if (validMoves(move.getStartPosition()).contains(move)){
             getBoard().makeMove(move);
         } else {
-            throw new InvalidMoveException("Invalid move");
+            throw new InvalidMoveException("Illegal Move: Move is not legal");
         }
         if (move.getPromotionPiece() != null) {
             piece = getBoard().getPiece(move.getEndPosition());
