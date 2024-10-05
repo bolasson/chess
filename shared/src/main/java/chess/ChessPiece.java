@@ -60,6 +60,13 @@ public class ChessPiece {
         return type;
     }
 
+    public void promotePiece(ChessMove move) {
+        int promotionRow = color == ChessGame.TeamColor.WHITE ? 8 : 1;
+        if (move.getEndPosition().getRow() == promotionRow) {
+            this.type = move.getPromotionPiece();
+        }
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in

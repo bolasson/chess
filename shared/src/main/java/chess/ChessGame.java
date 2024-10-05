@@ -110,6 +110,10 @@ public class ChessGame {
         } else {
             throw new InvalidMoveException("Invalid move");
         }
+        if (move.getPromotionPiece() != null) {
+            piece = getBoard().getPiece(move.getEndPosition());
+            piece.promotePiece(move);
+        }
         setTeamTurn(oppositeTeamColor(activeTeamColor));
     }
 
