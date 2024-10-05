@@ -57,6 +57,20 @@ public class ChessBoard {
         return board[position.getRow()-1][position.getColumn()-1];
     }
 
+    public ChessPosition GetKingPosition(ChessGame.TeamColor teamColor) {
+        ChessPosition kingPosition = null;
+        for (int i=1; i < 9; i++) {
+            for (int j=1; j < 9; i++) {
+                ChessPosition tempPosition = new ChessPosition(i, j);
+                ChessPiece piece = getPiece(tempPosition);
+                if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
+                    kingPosition = tempPosition;
+                }
+            }
+        }
+        return kingPosition;
+    }
+
     public ChessPiece[][] getBoard(){
         return board;
     }
