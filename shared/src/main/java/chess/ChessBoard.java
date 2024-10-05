@@ -31,12 +31,6 @@ public class ChessBoard {
         }
     }
 
-    public static void main (String[] args) {
-        ChessBoard chessBoard = new ChessBoard();
-        chessBoard.resetBoard();
-        System.out.println(DisplayGame.displayBoard(chessBoard.getBoard()));
-    }
-
     @Override
     public final boolean equals(Object o) {
         if (this == o) { return true; }

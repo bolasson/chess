@@ -21,12 +21,6 @@ public class ChessMove {
         this.promotionPiece = promotionPiece;
     }
 
-    public static void main(String[] args) {
-        ChessPosition f2 = new ChessPosition(2,6);
-        ChessMove move = new ChessMove(f2,new ChessPosition(5,4),null);
-        System.out.println(f2.toString());
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) { return true; }

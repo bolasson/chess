@@ -176,44 +176,4 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return chessBoard;
     }
-
-    public ChessBoard loadBoard(String boardString) {
-        ChessBoard board = new ChessBoard();
-        String[] rows = boardString.split("\n");
-        for (int row = 0; row < 8; row++) {
-            String[] pieces = rows[7 - row].trim().split("\\|");
-            for (int col = 0; col < 8; col++) {
-                String piece = pieces[col + 1].trim();
-                if (!piece.isEmpty()) {
-                    char pieceType = piece.charAt(0);
-                    TeamColor teamColor = Character.isUpperCase(pieceType) ? TeamColor.WHITE : TeamColor.BLACK;
-                    pieceType = Character.toLowerCase(pieceType);
-                    ChessPiece.PieceType chessPieceType = null;
-                    switch (pieceType) {
-                        case 'p':
-                            chessPieceType = ChessPiece.PieceType.PAWN;
-                            break;
-                        case 'r':
-                            chessPieceType = ChessPiece.PieceType.ROOK;
-                            break;
-                        case 'n', 'h':
-                            chessPieceType = ChessPiece.PieceType.KNIGHT;
-                            break;
-                        case 'b':
-                            chessPieceType = ChessPiece.PieceType.BISHOP;
-                            break;
-                        case 'q':
-                            chessPieceType = ChessPiece.PieceType.QUEEN;
-                            break;
-                        case 'k':
-                            chessPieceType = ChessPiece.PieceType.KING;
-                            break;
-                    }
-                    ChessPiece chessPiece = new ChessPiece(teamColor, chessPieceType);
-                    board.addPiece(new ChessPosition(row + 1, col + 1), chessPiece);
-                }
-            }
-        }
-        return board;
-    }
 }
