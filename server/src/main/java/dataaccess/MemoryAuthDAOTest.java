@@ -3,8 +3,8 @@ package dataaccess;
 import model.AuthData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MemoryAuthDAOTest {
     private MemoryAuthDAO authDAO;
@@ -30,5 +30,21 @@ public class MemoryAuthDAOTest {
         AuthData auth = new AuthData("authToken1", "user1");
         authDAO.createAuth(auth);
         assertEquals(auth, authDAO.getAuth("authToken1"));
+    }
+
+    @Test
+    public void testDeleteAuth() throws DataAccessException {
+        AuthData auth = new AuthData("authToken1", "user1");
+        authDAO.createAuth(auth);
+        authDAO.deleteAuth("authToken1");
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("authToken1"));
+    }
+
+    @Test
+    public void testAuthExists() throws DataAccessException {
+        AuthData auth = new AuthData("authToken1", "user1");
+        authDAO.createAuth(auth);
+        assertTrue(authDAO.authExists("authToken1"));
+        assertFalse(authDAO.authExists("nonExistentToken"));
     }
 }
