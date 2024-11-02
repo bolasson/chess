@@ -1,5 +1,7 @@
-package dataaccess;
+package passoff.dataaccess;
 
+import dataaccess.DataAccessException;
+import dataaccess.MemoryAuthDAO;
 import model.AuthData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
