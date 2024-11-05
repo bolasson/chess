@@ -67,4 +67,9 @@ public class MemoryGameDAO implements IGameDAO {
     public int countGames() {
         return games.size();
     }
+
+    @Override
+    public List<GameData> getAllGames() {
+        return new ArrayList<>(games.values());
+    }
 }

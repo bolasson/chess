@@ -1,7 +1,10 @@
 package dataaccess;
 
 import model.AuthData;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MemoryAuthDAO implements IAuthDAO {
@@ -40,5 +43,10 @@ public class MemoryAuthDAO implements IAuthDAO {
     @Override
     public boolean authExists(String authToken) {
         return authTokens.containsKey(authToken);
+    }
+
+    @Override
+    public List<AuthData> getAllAuthTokens() {
+        return new ArrayList<>(authTokens.values());
     }
 }

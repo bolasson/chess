@@ -1,7 +1,10 @@
 package dataaccess;
 
 import model.UserData;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MemoryUserDAO implements IUserDAO {
@@ -48,5 +51,10 @@ public class MemoryUserDAO implements IUserDAO {
     @Override
     public boolean userExists(String username) {
         return users.containsKey(username);
+    }
+
+    @Override
+    public List<UserData> getAllUsers() {
+        return new ArrayList<>(users.values());
     }
 }

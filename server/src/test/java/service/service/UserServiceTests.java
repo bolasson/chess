@@ -80,7 +80,7 @@ public class UserServiceTests {
         LoginResult result = userService.login(request);
         assertFalse(result.success());
         assertNull(result.authToken());
-        assertEquals("Error: unauthorized", result.username());
+        assertEquals("Error: credentials are invalid", result.username());
     }
 
     @Test

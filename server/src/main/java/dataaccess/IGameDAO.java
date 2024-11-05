@@ -12,4 +12,5 @@ public interface IGameDAO {
     void updateGame(GameData game) throws DataAccessException;
     void deleteGame(int gameID) throws DataAccessException;
     int countGames() throws DataAccessException;
+    List<GameData> getAllGames();
 }

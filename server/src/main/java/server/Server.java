@@ -1,7 +1,5 @@
 package server;
 
-import spark.*;
-import com.google.gson.Gson;
 import dataaccess.*;
 import handlers.*;
 import service.AuthService;
@@ -23,16 +21,17 @@ public class Server {
         MemoryGameDAO gameDAO = new MemoryGameDAO();
         UserService userService = new UserService(userDAO, authDAO);
         GameService gameService = new GameService(gameDAO, authDAO);
+        AuthService authService = new AuthService(authDAO);
         UserHandler userHandler = new UserHandler(userService);
         GameHandler gameHandler = new GameHandler(gameService);
+        ClearHandler clearHandler = new ClearHandler(userService, gameService, authService);
         Spark.post("/user", userHandler.register);
         Spark.post("/session", userHandler.login);
         Spark.delete("/session", userHandler.logout);
         Spark.post("/game", gameHandler.createGame);
         Spark.get("/game", gameHandler.listGames);
         Spark.put("/game", gameHandler.joinGame);
-        Spark.init();
-
+        Spark.delete("/db", clearHandler.clear);
         Spark.awaitInitialization();
         return Spark.port();
     }

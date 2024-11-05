@@ -20,7 +20,9 @@ public class GameHandler {
     }
 
     public Route createGame = (Request req, Response res) -> {
+        String authToken = req.headers("Authorization");
         CreateGameRequest createGameRequest = gson.fromJson(req.body(), CreateGameRequest.class);
+        createGameRequest = new CreateGameRequest(authToken, createGameRequest.gameName());
         CreateGameResult result = gameService.createGame(createGameRequest);
         res.status(result.success() ? 200 : 400);
         return gson.toJson(result);
@@ -34,7 +36,9 @@ public class GameHandler {
     };
 
     public Route joinGame = (Request req, Response res) -> {
+        String authToken = req.headers("Authorization");
         JoinGameRequest joinGameRequest = gson.fromJson(req.body(), JoinGameRequest.class);
+        joinGameRequest = new JoinGameRequest(authToken, joinGameRequest.gameID(), joinGameRequest.playerColor());
         JoinGameResult result = gameService.joinGame(joinGameRequest);
         res.status(result.success() ? 200 : 400);
         return gson.toJson(result);
