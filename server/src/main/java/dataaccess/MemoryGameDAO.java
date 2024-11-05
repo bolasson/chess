@@ -1,7 +1,6 @@
 package dataaccess;
 
 import model.GameData;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,16 +32,6 @@ public class MemoryGameDAO implements IGameDAO {
     }
 
     @Override
-    public GameData getGameByName(String gameName) throws DataAccessException {
-        for (GameData game : games.values()) {
-            if (game.gameName().equals(gameName)) {
-                return game;
-            }
-        }
-        throw new DataAccessException("Game not found");
-    }
-
-    @Override
     public List<GameData> listGames() {
         return new ArrayList<>(games.values());
     }
@@ -53,23 +42,5 @@ public class MemoryGameDAO implements IGameDAO {
             throw new DataAccessException("Game not found");
         }
         games.put(game.gameID(), game);
-    }
-
-    @Override
-    public void deleteGame(int gameID) throws DataAccessException {
-        if (!games.containsKey(gameID)) {
-            throw new DataAccessException("Game not found");
-        }
-        games.remove(gameID);
-    }
-
-    @Override
-    public int countGames() {
-        return games.size();
-    }
-
-    @Override
-    public List<GameData> getAllGames() {
-        return new ArrayList<>(games.values());
     }
 }

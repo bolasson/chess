@@ -1,10 +1,7 @@
 package dataaccess;
 
 import model.UserData;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MemoryUserDAO implements IUserDAO {
@@ -33,28 +30,7 @@ public class MemoryUserDAO implements IUserDAO {
     }
 
     @Override
-    public void updateUser(UserData user) throws DataAccessException {
-        if (!users.containsKey(user.username())) {
-            throw new DataAccessException("User not found");
-        }
-        users.put(user.username(), user);
-    }
-
-    @Override
-    public void deleteUser(String username) throws DataAccessException {
-        if (!users.containsKey(username)) {
-            throw new DataAccessException("User not found");
-        }
-        users.remove(username);
-    }
-
-    @Override
     public boolean userExists(String username) {
         return users.containsKey(username);
-    }
-
-    @Override
-    public List<UserData> getAllUsers() {
-        return new ArrayList<>(users.values());
     }
 }

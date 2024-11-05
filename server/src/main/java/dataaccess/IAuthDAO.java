@@ -2,13 +2,9 @@ package dataaccess;
 
 import model.AuthData;
 
-import java.util.List;
-
 public interface IAuthDAO {
     void clear() throws DataAccessException;
     void createAuth(AuthData auth) throws DataAccessException;
     AuthData getAuth(String authToken) throws DataAccessException;
     void deleteAuth(String authToken) throws DataAccessException;
-    boolean authExists(String authToken) throws DataAccessException;
-    List<AuthData> getAllAuthTokens();
 }
