@@ -1,7 +1,6 @@
 package passoff.service;
 
 import dataaccess.*;
-import jdk.jfr.Description;
 import service.*;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,5 +35,40 @@ public class AuthServiceTests {
 
         assertFalse(result.success());
         assertEquals("Invalid auth token", result.usernameOrMessage());
+    }
+
+    @Test
+    public void generateAuthTokenSuccess() throws DataAccessException {
+        GenerationResult result = authService.generateNewAuthToken("newUser");
+        assertTrue(result.success());
+        assertNotNull(result.authToken());
+        AuthData authData = authDAO.getAuth(result.authToken());
+        assertEquals("newUser", authData.username());
+    }
+
+    @Test
+    public void generateAuthTokenFailureExistingToken() throws DataAccessException {
+        AuthData existingAuth = new AuthData("existingToken", "user1");
+        authDAO.createAuth(existingAuth);
+        GenerationResult result = authService.generateNewAuthToken("user1");
+        assertTrue(result.success());
+        assertNotNull(result.authToken());
+        assertNotEquals("existingToken", result.authToken());
+    }
+
+    @Test
+    public void deactivateAuthTokenSuccess() throws DataAccessException {
+        AuthData auth = new AuthData("authTokenToInvalidate", "user1");
+        authDAO.createAuth(auth);
+        DeactivationResult result = authService.deactivateAuthToken("authTokenToInvalidate");
+        assertTrue(result.success());
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("authTokenToInvalidate"));
+    }
+
+    @Test
+    public void deactivateAuthTokenFailureInvalidToken() {
+        DeactivationResult result = authService.deactivateAuthToken("nonExistentToken");
+        assertFalse(result.success());
+        assertEquals("Error: Auth token not found", result.message());
     }
 }
