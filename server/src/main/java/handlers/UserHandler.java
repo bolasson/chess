@@ -22,14 +22,14 @@ public class UserHandler {
     public Route register = (Request req, Response res) -> {
         RegisterRequest registerRequest = gson.fromJson(req.body(), RegisterRequest.class);
         RegisterResult result = userService.register(registerRequest);
-        res.status(result.success() ? 200 : 400);
+        res.status(result.statusCode());
         return gson.toJson(result);
     };
 
     public Route login = (Request req, Response res) -> {
         LoginRequest loginRequest = gson.fromJson(req.body(), LoginRequest.class);
         LoginResult result = userService.login(loginRequest);
-        res.status(result.success() ? 200 : 401);
+        res.status(result.statusCode());
         return gson.toJson(result);
     };
 

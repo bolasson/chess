@@ -24,7 +24,7 @@ public class GameHandler {
         CreateGameRequest createGameRequest = gson.fromJson(req.body(), CreateGameRequest.class);
         createGameRequest = new CreateGameRequest(authToken, createGameRequest.gameName());
         CreateGameResult result = gameService.createGame(createGameRequest);
-        res.status(result.success() ? 200 : 400);
+        res.status(result.success() ? 200 : 401);
         return gson.toJson(result);
     };
 
@@ -40,7 +40,7 @@ public class GameHandler {
         JoinGameRequest joinGameRequest = gson.fromJson(req.body(), JoinGameRequest.class);
         joinGameRequest = new JoinGameRequest(authToken, joinGameRequest.gameID(), joinGameRequest.playerColor());
         JoinGameResult result = gameService.joinGame(joinGameRequest);
-        res.status(result.success() ? 200 : 400);
+        res.status(result.statusCode());
         return gson.toJson(result);
     };
 }

@@ -27,16 +27,16 @@ public class UserService {
     public RegisterResult register(RegisterRequest request) {
         try {
             if (request.username() == null || request.username().isEmpty()) {
-                return new RegisterResult(false, "Error: username is required");
+                return new RegisterResult(false, "Error: username is required", 400);
             }
             if (request.password() == null || request.password().isEmpty()) {
-                return new RegisterResult(false, "Error: password is required");
+                return new RegisterResult(false, "Error: password is required", 400);
             }
             if (request.email() == null || request.email().isEmpty()) {
-                return new RegisterResult(false, "Error: email is required");
+                return new RegisterResult(false, "Error: email is required", 400);
             }
             if (userDAO.userExists(request.username())) {
-                return new RegisterResult(false, "Error: username already taken");
+                return new RegisterResult(false, "Error: username already taken", 403);
             }
             UserData newUser = new UserData(request.username(), request.password(), request.email());
             userDAO.createUser(newUser);
@@ -45,7 +45,7 @@ public class UserService {
             authDAO.createAuth(authData);
             return new RegisterResult(true, authToken, request.username());
         } catch (Exception e) {
-            return new RegisterResult(false, "Error: " + e.getMessage());
+            return new RegisterResult(false, "Error: " + e.getMessage(), 403);
         }
     }
 
@@ -53,17 +53,17 @@ public class UserService {
         try {
             UserData user = userDAO.getUser(request.username());
             if (request.username() == null || request.username().isEmpty()) {
-                return new LoginResult(false, "Error: please enter your username");
+                return new LoginResult(false, "Error: please enter your username", 400);
             }
             if (!user.password().equals(request.password())) {
-                return new LoginResult(false, "Error: credentials are invalid");
+                return new LoginResult(false, "Error: credentials are invalid", 401);
             }
             String authToken = generateAuthToken();
             AuthData authData = new AuthData(authToken, request.username());
             authDAO.createAuth(authData);
             return new LoginResult(true, authToken, request.username());
         } catch (Exception e) {
-            return new LoginResult(false, "Error: " + e.getMessage());
+            return new LoginResult(false, "Error: user does not exist", 401);
         }
     }
 

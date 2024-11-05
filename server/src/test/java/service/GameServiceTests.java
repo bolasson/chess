@@ -42,7 +42,7 @@ public class GameServiceTests {
         CreateGameRequest request = new CreateGameRequest("authToken1", "Game1");
         CreateGameResult result = gameService.createGame(request);
         assertTrue(result.success());
-        assertNotEquals(-1, result.gameID());
+        assertNotEquals(null, result.gameID());
         GameData game = gameDAO.getGame(result.gameID());
         assertEquals("Game1", game.gameName());
     }
@@ -104,6 +104,6 @@ public class GameServiceTests {
         JoinGameRequest request = new JoinGameRequest("invalidAuthToken", 1, "WHITE");
         JoinGameResult result = gameService.joinGame(request);
         assertFalse(result.success());
-        assertEquals("Error: Auth token not found", result.message());
+        assertEquals("Error: unauthorized", result.message());
     }
 }

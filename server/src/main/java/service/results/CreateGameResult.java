@@ -1,11 +1,11 @@
 package service.results;
 
-public record CreateGameResult(boolean success, int gameID, String message) {
+public record CreateGameResult(boolean success, Integer gameID, String message) {
     public CreateGameResult(boolean success, int gameID) {
         this(success, gameID, null);
     }
 
     public CreateGameResult(boolean success, String message) {
-        this(success, -1, message);
+        this(success, null, message);
     }
 }

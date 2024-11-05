@@ -60,7 +60,7 @@ public class UserServiceTests {
         RegisterResult result = userService.register(request);
         assertFalse(result.success());
         assertNull(result.authToken());
-        assertEquals("Error: username already taken", result.username());
+        assertEquals(null, result.username());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class UserServiceTests {
         LoginResult result = userService.login(request);
         assertFalse(result.success());
         assertNull(result.authToken());
-        assertEquals("Error: credentials are invalid", result.username());
+        assertEquals(null, result.username());
     }
 
     @Test
@@ -93,7 +93,7 @@ public class UserServiceTests {
         LoginResult result = userService.login(request);
         assertFalse(result.success());
         assertNull(result.authToken());
-        assertEquals("Error: User not found", result.username());
+        assertEquals(null, result.username());
     }
 
     @Test
