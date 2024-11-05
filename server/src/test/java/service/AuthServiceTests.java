@@ -35,9 +35,7 @@ public class AuthServiceTests {
     public void verifyAuthTokenSuccess() throws DataAccessException {
         AuthData auth = new AuthData("validToken", "user1");
         authDAO.createAuth(auth);
-
         VerificationResult result = authService.verifyAuthToken("validToken");
-
         assertTrue(result.success());
         assertEquals("user1", result.usernameOrMessage());
     }
@@ -45,7 +43,6 @@ public class AuthServiceTests {
     @Test
     public void verifyAuthTokenFailureInvalidToken() {
         VerificationResult result = authService.verifyAuthToken("invalidToken");
-
         assertFalse(result.success());
         assertEquals("Invalid auth token", result.usernameOrMessage());
     }

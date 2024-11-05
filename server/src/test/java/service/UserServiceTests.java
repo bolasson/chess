@@ -52,7 +52,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @Description("This test tries to create a new user, but fails due to the user already existing")
+    @Description("This test tries to create a new user, but fails because the user already existing")
     public void registerFailureUserAlreadyExists() throws DataAccessException {
         UserData existingUser = new UserData("existingUser", "password123", "email@example.com");
         userDAO.createUser(existingUser);
@@ -60,7 +60,7 @@ public class UserServiceTests {
         RegisterResult result = userService.register(request);
         assertFalse(result.success());
         assertNull(result.authToken());
-        assertEquals(null, result.username());
+        assertNull(result.username());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class UserServiceTests {
         LoginResult result = userService.login(request);
         assertFalse(result.success());
         assertNull(result.authToken());
-        assertEquals(null, result.username());
+        assertEquals("Error: credentials are invalid", result.message());
     }
 
     @Test
@@ -93,7 +93,7 @@ public class UserServiceTests {
         LoginResult result = userService.login(request);
         assertFalse(result.success());
         assertNull(result.authToken());
-        assertEquals(null, result.username());
+        assertEquals("Error: user does not exist", result.message());
     }
 
     @Test
