@@ -22,6 +22,17 @@ public class UserServiceTests {
     }
 
     @Test
+    public void clearSuccess() throws DataAccessException {
+        UserData user1 = new UserData("user1", "password1", "email1@example.com");
+        UserData user2 = new UserData("user2", "password2", "email2@example.com");
+        userDAO.createUser(user1);
+        userDAO.createUser(user2);
+        userService.clear();
+        assertThrows(DataAccessException.class, () -> userDAO.getUser("user2"));
+        assertThrows(DataAccessException.class, () -> userDAO.getUser("user1"));
+    }
+
+    @Test
     public void registerSuccess() throws DataAccessException {
         RegisterRequest request = new RegisterRequest("newUser", "password123", "email@example.com");
         RegisterResult result = userService.register(request);

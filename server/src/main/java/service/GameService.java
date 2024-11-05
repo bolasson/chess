@@ -16,6 +16,10 @@ public class GameService {
         this.authDAO = authDAO;
     }
 
+    public void clear() throws DataAccessException {
+        gameDAO.clear();
+    }
+
     public CreateGameResult createGame(CreateGameRequest request) {
         try {
             AuthData authData = authDAO.getAuth(request.authToken());

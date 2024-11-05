@@ -21,6 +21,17 @@ public class GameServiceTests {
     }
 
     @Test
+    public void clear() throws DataAccessException {
+        GameData game1 = new GameData(1, "whitePlayer1", "blackPlayer1", "Game1", null);
+        GameData game2 = new GameData(2, "whitePlayer2", "blackPlayer2", "Game2", null);
+        gameDAO.createGame(game1);
+        gameDAO.createGame(game2);
+        gameService.clear();
+        assertThrows(DataAccessException.class, () -> gameDAO.getGame(1));
+        assertThrows(DataAccessException.class, () -> gameDAO.getGame(2));
+    }
+
+    @Test
     public void createGameSuccess() throws DataAccessException {
         AuthData authData = new AuthData("authToken1", "user1");
         authDAO.createAuth(authData);

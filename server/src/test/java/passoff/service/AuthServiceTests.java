@@ -19,6 +19,17 @@ public class AuthServiceTests {
     }
 
     @Test
+    public void clear() throws DataAccessException {
+        AuthData auth1 = new AuthData("authToken1", "user1");
+        AuthData auth2 = new AuthData("authToken2", "user2");
+        authDAO.createAuth(auth1);
+        authDAO.createAuth(auth2);
+        authDAO.clear();
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("authToken1"));
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("authToken2"));
+    }
+
+    @Test
     public void verifyAuthTokenSuccess() throws DataAccessException {
         AuthData auth = new AuthData("validToken", "user1");
         authDAO.createAuth(auth);

@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.IAuthDAO;
 import dataaccess.IUserDAO;
 import model.AuthData;
@@ -12,6 +13,10 @@ public class UserService {
     public UserService(IUserDAO userDAO, IAuthDAO authDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
+    }
+
+    public void clear() throws DataAccessException {
+        userDAO.clear();
     }
 
     public RegisterResult register(RegisterRequest request) {

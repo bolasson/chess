@@ -11,6 +11,10 @@ public class AuthService {
         this.authDAO = authDAO;
     }
 
+    public void clear() throws DataAccessException {
+        authDAO.clear();
+    }
+
     public VerificationResult verifyAuthToken(String authToken) {
         try {
             AuthData authData = authDAO.getAuth(authToken);
