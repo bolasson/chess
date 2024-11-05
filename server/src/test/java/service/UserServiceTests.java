@@ -1,11 +1,15 @@
-package service.service;
+package service;
 
 import dataaccess.*;
 import jdk.jfr.Description;
-import service.*;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.requests.LoginRequest;
+import service.requests.RegisterRequest;
+import service.results.LoginResult;
+import service.results.LogoutResult;
+import service.results.RegisterResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 

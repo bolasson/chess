@@ -3,6 +3,9 @@ package service;
 import dataaccess.IAuthDAO;
 import dataaccess.DataAccessException;
 import model.AuthData;
+import service.results.DeactivationResult;
+import service.results.GenerationResult;
+import service.results.VerificationResult;
 
 public class AuthService {
     private final IAuthDAO authDAO;

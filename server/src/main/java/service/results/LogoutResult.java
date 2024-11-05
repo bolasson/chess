@@ -1,4 +1,4 @@
-package service;
+package service.results;
 
 public record LogoutResult(boolean success, String message) {
     public LogoutResult(boolean success) {

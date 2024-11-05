@@ -1,10 +1,12 @@
-package service.service;
+package service;
 
 import dataaccess.*;
-import service.*;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.results.DeactivationResult;
+import service.results.GenerationResult;
+import service.results.VerificationResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 

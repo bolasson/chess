@@ -1,11 +1,15 @@
-package service.service;
+package service;
 
 import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.*;
-import java.util.List;
+import service.requests.CreateGameRequest;
+import service.requests.JoinGameRequest;
+import service.results.CreateGameResult;
+import service.results.JoinGameResult;
+import service.results.ListGamesResult;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceTests {

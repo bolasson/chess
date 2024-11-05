@@ -1,4 +1,4 @@
-package service;
+package service.results;
 
 public record VerificationResult(boolean success, String usernameOrMessage) {
     public VerificationResult(boolean success) {

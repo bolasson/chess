@@ -5,6 +5,11 @@ import dataaccess.IAuthDAO;
 import dataaccess.IUserDAO;
 import model.AuthData;
 import model.UserData;
+import service.requests.LoginRequest;
+import service.requests.RegisterRequest;
+import service.results.LoginResult;
+import service.results.LogoutResult;
+import service.results.RegisterResult;
 
 public class UserService {
     private final IUserDAO userDAO;
