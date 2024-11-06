@@ -27,30 +27,22 @@ public class SQLUserDAOTests {
     }
 
     @Test
-    public void clearSuccess() {
+    public void clearSuccess() throws DataAccessException {
         UserData user = new UserData("testUser", "password123", "test@example.com");
-        try {
-            userDAO.createUser(user);
-            assertTrue(userDAO.userExists("testUser"));
-            userDAO.clear();
-            assertFalse(userDAO.userExists("testUser"));
-        } catch (DataAccessException e) {
-            System.err.println("Error when clearing data: " + e.getMessage());
-        }
+        userDAO.createUser(user);
+        assertTrue(userDAO.userExists("testUser"));
+        userDAO.clear();
+        assertFalse(userDAO.userExists("testUser"));
     }
 
     @Test
-    public void createUserSuccess() {
+    public void createUserSuccess() throws DataAccessException {
         UserData user = new UserData("testUser", "password123", "test@example.com");
-        try {
-            userDAO.createUser(user);
-            UserData retrievedUser = userDAO.getUser("testUser");
-            assertNotNull(retrievedUser);
-            assertEquals("testUser", retrievedUser.username());
-            assertEquals("test@example.com", retrievedUser.email());
-        } catch (DataAccessException e) {
-            System.err.println("Error when creating user: " + e.getMessage());
-        }
+        userDAO.createUser(user);
+        UserData retrievedUser = userDAO.getUser("testUser");
+        assertNotNull(retrievedUser);
+        assertEquals("testUser", retrievedUser.username());
+        assertEquals("test@example.com", retrievedUser.email());
     }
 
     @Test
@@ -63,48 +55,31 @@ public class SQLUserDAOTests {
     }
 
     @Test
-    public void getUserSuccess() {
+    public void getUserSuccess() throws DataAccessException {
         UserData user = new UserData("testUser", "password123", "test@example.com");
-        try {
-            userDAO.createUser(user);
-
-            UserData retrievedUser = userDAO.getUser("testUser");
-            assertNotNull(retrievedUser);
-            assertEquals("testUser", retrievedUser.username());
-            assertEquals("test@example.com", retrievedUser.email());
-        } catch (DataAccessException e) {
-            fail("Exception thrown during testGetUserExists: " + e.getMessage());
-        }
+        userDAO.createUser(user);
+        UserData retrievedUser = userDAO.getUser("testUser");
+        assertNotNull(retrievedUser);
+        assertEquals("testUser", retrievedUser.username());
+        assertEquals("test@example.com", retrievedUser.email());
     }
 
     @Test
-    public void getUserFailureDoesNotExist() {
-        try {
-            UserData retrievedUser = userDAO.getUser("nonExistentUser");
-            assertNull(retrievedUser, "Expected null for a non-existent user.");
-        } catch (DataAccessException e) {
-            fail("Exception thrown during testGetUserNotExists: " + e.getMessage());
-        }
+    public void getUserFailureDoesNotExist() throws DataAccessException {
+        UserData retrievedUser = userDAO.getUser("nonExistentUser");
+        assertNull(retrievedUser, "Expected null for a non-existent user.");
     }
 
     @Test
-    public void userExistsSuccess() {
+    public void userExistsSuccess() throws DataAccessException {
         UserData user = new UserData("testUser", "password123", "test@example.com");
-        try {
-            assertFalse(userDAO.userExists("testUser"));
-            userDAO.createUser(user);
-            assertTrue(userDAO.userExists("testUser"));
-        } catch (DataAccessException e) {
-            System.err.println("Exception thrown during testUserExists: " + e.getMessage());
-        }
+        assertFalse(userDAO.userExists("testUser"));
+        userDAO.createUser(user);
+        assertTrue(userDAO.userExists("testUser"));
     }
 
     @Test
-    public void userExistsFailureUserDoesNotExist() {
-        try {
-            assertFalse(userDAO.userExists("nonExistentUser"));
-        } catch (DataAccessException e) {
-            System.err.println("Exception thrown during testUserExistsNotExists: " + e.getMessage());
-        }
+    public void userExistsFailureUserDoesNotExist() throws DataAccessException {
+        assertFalse(userDAO.userExists("nonExistentUser"));
     }
 }
