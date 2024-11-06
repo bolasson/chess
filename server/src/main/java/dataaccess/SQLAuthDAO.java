@@ -50,6 +50,13 @@ public class SQLAuthDAO implements IAuthDAO {
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        String sql = "DELETE FROM AuthTokens WHERE authToken = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, authToken);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Error deleting auth token: " + e.getMessage());
+        }
     }
 }
