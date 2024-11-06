@@ -27,7 +27,15 @@ public class SQLAuthDAOTests {
 
     @Test
     public void clearSuccess() throws DataAccessException {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        AuthData auth = new AuthData("authToken1", "user1");
+        try {
+            authDAO.createAuth(auth);
+            assertNotNull(authDAO.getAuth("authToken1"));
+            authDAO.clear();
+            assertNull(authDAO.getAuth("authToken1"));
+        } catch (DataAccessException e) {
+            System.err.println("Error clearing data: " + e.getMessage());
+        }
     }
 
     @Test
@@ -83,11 +91,25 @@ public class SQLAuthDAOTests {
 
     @Test
     public void deleteAuthSuccess() throws DataAccessException {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        AuthData auth = new AuthData("authToken1", "user1");
+        try {
+            authDAO.createAuth(auth);
+            assertNotNull(authDAO.getAuth("authToken1"));
+            authDAO.deleteAuth("authToken1");
+            assertNull(authDAO.getAuth("authToken1"));
+        } catch (DataAccessException e) {
+            System.err.println("Error deleting auth token: " + e.getMessage());
+        }
     }
 
     @Test
     public void deleteAuthFailureDoesNotExist() throws DataAccessException {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        try {
+            assertThrows(DataAccessException.class, () -> {
+                authDAO.deleteAuth("nonExistentAuth");
+            });
+        } catch (Exception e) {
+            System.err.println("Error deleting non-existent auth token: " + e.getMessage());
+        }
     }
 }
