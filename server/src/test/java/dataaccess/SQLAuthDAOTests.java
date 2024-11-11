@@ -38,8 +38,9 @@ public class SQLAuthDAOTests {
         authDAO.createAuth(auth);
         assertNotNull(authDAO.getAuth("authToken1"));
         authDAO.clear();
-        assertNull(authDAO.getAuth("authToken1"));
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("authToken1"));
     }
+
 
     @Test
     public void createAuthSuccess() throws DataAccessException {
@@ -78,8 +79,9 @@ public class SQLAuthDAOTests {
 
     @Test
     public void getAuthFailureDoesNotExist() throws DataAccessException {
-        AuthData retrievedAuth = authDAO.getAuth("nonExistentToken");
-        assertNull(retrievedAuth, "Expected null for a non-existent auth token.");
+        assertThrows(DataAccessException.class, () -> {
+            authDAO.getAuth("nonExistentToken");
+        });
     }
 
     @Test
@@ -90,11 +92,14 @@ public class SQLAuthDAOTests {
         authDAO.createAuth(auth);
         assertNotNull(authDAO.getAuth("authToken1"));
         authDAO.deleteAuth("authToken1");
-        assertNull(authDAO.getAuth("authToken1"));
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("authToken1"));
     }
+
 
     @Test
     public void deleteAuthFailureDoesNotExist() throws DataAccessException {
-        authDAO.deleteAuth("nonExistentAuth");
+        assertThrows(DataAccessException.class, () -> {
+            authDAO.deleteAuth("nonExistentAuth");
+        });
     }
 }

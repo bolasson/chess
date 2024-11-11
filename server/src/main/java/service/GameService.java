@@ -61,6 +61,9 @@ public class GameService {
             if (request.playerColor() == null) {
                 return new JoinGameResult(false, "Error: player color is required", 400);
             }
+            if (request.gameID() <= 0) {
+                return new JoinGameResult(false, "Error: gameID is required", 400);
+            }
             if (request.playerColor().equals("WHITE") && game.whiteUsername() == null) {
                 game = new GameData(game.gameID(), authData.username(), game.blackUsername(), game.gameName(), game.game());
             } else if (request.playerColor().equals("BLACK") && game.blackUsername() == null) {

@@ -10,6 +10,7 @@ import service.requests.RegisterRequest;
 import service.results.LoginResult;
 import service.results.LogoutResult;
 import service.results.RegisterResult;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
     private final IUserDAO userDAO;
@@ -51,18 +52,21 @@ public class UserService {
 
     public LoginResult login(LoginRequest request) {
         try {
-            UserData user = userDAO.getUser(request.username());
             if (request.username() == null || request.username().isEmpty()) {
-                return new LoginResult(false, "Error: please enter your username", 400);
+                return new LoginResult(false, "Error: username is required", 400);
             }
-            if (!user.password().equals(request.password())) {
+            if (request.password() == null || request.password().isEmpty()) {
+                return new LoginResult(false, "Error: password is required", 400);
+            }
+            UserData user = userDAO.getUser(request.username());
+            if (!BCrypt.checkpw(request.password(), user.password())) {
                 return new LoginResult(false, "Error: credentials are invalid", 401);
             }
             String authToken = generateAuthToken();
             AuthData authData = new AuthData(authToken, request.username());
             authDAO.createAuth(authData);
             return new LoginResult(true, authToken, request.username());
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             return new LoginResult(false, "Error: user does not exist", 401);
         }
     }

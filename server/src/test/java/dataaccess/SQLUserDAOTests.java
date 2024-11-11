@@ -65,9 +65,10 @@ public class SQLUserDAOTests {
     }
 
     @Test
-    public void getUserFailureDoesNotExist() throws DataAccessException {
-        UserData retrievedUser = userDAO.getUser("nonExistentUser");
-        assertNull(retrievedUser, "Expected null for a non-existent user.");
+    public void getUserFailureDoesNotExist() {
+        assertThrows(DataAccessException.class, () -> {
+            userDAO.getUser("nonExistentUser");
+        }, "Expected DataAccessException for a non-existent user.");
     }
 
     @Test

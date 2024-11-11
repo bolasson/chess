@@ -28,6 +28,12 @@ public class SQLAuthDAO implements IAuthDAO {
             stmt.setString(2, auth.username());
             stmt.executeUpdate();
         } catch (SQLException e) {
+            if (e.getMessage().contains("foreign key constraint")) {
+                throw new DataAccessException("Error creating auth token: Username does not exist");
+            }
+            if (e.getMessage().contains("Duplicate entry")) {
+                throw new DataAccessException("Error creating auth token: Auth token already exists");
+            }
             throw new DataAccessException("Error creating auth token: " + e.getMessage());
         }
     }
@@ -36,13 +42,14 @@ public class SQLAuthDAO implements IAuthDAO {
     public AuthData getAuth(String authToken) throws DataAccessException {
         String sql = "SELECT authToken, username FROM AuthTokens WHERE authToken = ?";
         try (Connection conn = DatabaseManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, authToken);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new AuthData(rs.getString("authToken"), rs.getString("username"));
+            } else {
+                throw new DataAccessException("Auth token not found");
             }
-            return null;
         } catch (SQLException e) {
             throw new DataAccessException("Error getting auth token: " + e.getMessage());
         }
@@ -52,9 +59,12 @@ public class SQLAuthDAO implements IAuthDAO {
     public void deleteAuth(String authToken) throws DataAccessException {
         String sql = "DELETE FROM AuthTokens WHERE authToken = ?";
         try (Connection conn = DatabaseManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, authToken);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new DataAccessException("Auth token not found");
+            }
         } catch (SQLException e) {
             throw new DataAccessException("Error deleting auth token: " + e.getMessage());
         }

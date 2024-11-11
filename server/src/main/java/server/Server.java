@@ -11,14 +11,21 @@ import spark.Spark;
 public class Server {
 
     public int run(int desiredPort) {
+        try {
+            DatabaseManager.initializeDatabase();
+        } catch (Exception e) {
+            System.err.println("Error initializing database: " + e.getMessage());
+            return -1;
+        }
+
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        MemoryUserDAO userDAO = new MemoryUserDAO();
-        MemoryAuthDAO authDAO = new MemoryAuthDAO();
-        MemoryGameDAO gameDAO = new MemoryGameDAO();
+        IUserDAO userDAO = new SQLUserDAO();
+        IAuthDAO authDAO = new SQLAuthDAO();
+        IGameDAO gameDAO = new SQLGameDAO();
         UserService userService = new UserService(userDAO, authDAO);
         GameService gameService = new GameService(gameDAO, authDAO);
         AuthService authService = new AuthService(authDAO);
