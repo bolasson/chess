@@ -56,11 +56,11 @@ public class SQLUserDAOTests {
 
     @Test
     public void getUserSuccess() throws DataAccessException {
-        UserData user = new UserData("testUser", "password123", "test@example.com");
+        UserData user = new UserData("testUser2", "password321", "test@example.com");
         userDAO.createUser(user);
-        UserData retrievedUser = userDAO.getUser("testUser");
+        UserData retrievedUser = userDAO.getUser("testUser2");
         assertNotNull(retrievedUser);
-        assertEquals("testUser", retrievedUser.username());
+        assertEquals("testUser2", retrievedUser.username());
         assertEquals("test@example.com", retrievedUser.email());
     }
 
