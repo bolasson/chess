@@ -86,13 +86,13 @@ public class SQLAuthDAOTests {
 
     @Test
     public void deleteAuthSuccess() throws DataAccessException {
-        AuthData auth = new AuthData("authToken1", "user1");
+        AuthData auth = new AuthData("authToken5", "user1");
         UserData user = new UserData("user1", "password123", "user1@example.com");
         userDAO.createUser(user);
         authDAO.createAuth(auth);
-        assertNotNull(authDAO.getAuth("authToken1"));
-        authDAO.deleteAuth("authToken1");
-        assertThrows(DataAccessException.class, () -> authDAO.getAuth("authToken1"));
+        assertNotNull(authDAO.getAuth("authToken5"));
+        authDAO.deleteAuth("authToken5");
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("authToken5"));
     }
 
 
