@@ -67,14 +67,14 @@ public class SQLAuthDAOTests {
 
     @Test
     public void getAuthSuccess() throws DataAccessException {
-        AuthData auth = new AuthData("authToken1", "user1");
-        UserData user = new UserData("user1", "password123", "user1@example.com");
+        AuthData auth = new AuthData("authToken2", "user2");
+        UserData user = new UserData("user2", "password321", "user2@example.com");
         userDAO.createUser(user);
         authDAO.createAuth(auth);
-        AuthData retrievedAuth = authDAO.getAuth("authToken1");
+        AuthData retrievedAuth = authDAO.getAuth("authToken2");
         assertNotNull(retrievedAuth);
-        assertEquals("authToken1", retrievedAuth.authToken());
-        assertEquals("user1", retrievedAuth.username());
+        assertEquals("authToken2", retrievedAuth.authToken());
+        assertEquals("user2", retrievedAuth.username());
     }
 
     @Test
