@@ -44,10 +44,19 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void testLogin() throws Exception {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            facade.login("username", "password");
-        });
+    public void loginSuccess() throws Exception {
+        facade.register("loginUser", "password123", "loginUser@example.com");
+        var authData = facade.login("loginUser", "password123");
+        assertNotNull(authData);
+        assertEquals("loginUser", authData.username());
+    }
+
+    @Test
+    public void loginFailureInvalidCredentials() {
+        Exception exception = assertThrows(Exception.class, () ->
+                facade.login("nonExistentUser", "wrongPassword")
+        );
+        assertTrue(exception.getMessage().contains("user does not exist"));
     }
 
     @Test

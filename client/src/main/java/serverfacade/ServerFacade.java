@@ -3,6 +3,7 @@ package serverfacade;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
+import requests.LoginRequest;
 import requests.RegisterRequest;
 
 import java.io.OutputStream;
@@ -44,7 +45,15 @@ public class ServerFacade {
     }
 
     public AuthData login(String username, String password) throws Exception {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        URL url = new URL(serverUrl + "/session");
+        HttpURLConnection conn = createConnection(url, "POST");
+        String body = gson.toJson(new LoginRequest(username, password));
+        sendRequest(conn, body);
+        if (conn.getResponseCode() == 200) {
+            return gson.fromJson(new String(conn.getInputStream().readAllBytes()), AuthData.class);
+        } else {
+            throw new Exception(readError(conn));
+        }
     }
 
     public void logout(String authToken) throws Exception {
