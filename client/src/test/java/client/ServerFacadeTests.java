@@ -72,10 +72,14 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void testCreateGame() throws Exception {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            facade.createGame("Test Game", "authToken");
-        });
+    public void createGameSuccess() throws Exception {
+        var authData = facade.register("gameCreator", "password123", "gameCreator@example.com");
+        assertDoesNotThrow(() -> facade.createGame("My First Game", authData.authToken()));
+    }
+
+    @Test
+    public void createGameFailureUnauthorized() {
+        assertThrows(Exception.class, () -> facade.createGame("Unauthorized Game", "invalidAuthToken"));
     }
 
     @Test

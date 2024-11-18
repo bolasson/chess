@@ -5,6 +5,7 @@ import model.AuthData;
 import model.GameData;
 import requests.LoginRequest;
 import requests.RegisterRequest;
+import requests.CreateGameRequest;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -65,8 +66,15 @@ public class ServerFacade {
         }
     }
 
-    public GameData createGame(String gameName, String authToken) throws Exception {
-        throw new UnsupportedOperationException("Not implemented yet.");
+    public void createGame(String gameName, String authToken) throws Exception {
+        URL url = new URL(serverUrl + "/game");
+        HttpURLConnection conn = createConnection(url, "POST");
+        conn.setRequestProperty("Authorization", authToken);
+        String body = gson.toJson(new CreateGameRequest(authToken, gameName));
+        sendRequest(conn, body);
+        if (conn.getResponseCode() != 200) {
+            throw new Exception(readError(conn));
+        }
     }
 
     public List<GameData> listGames(String authToken) throws Exception {
