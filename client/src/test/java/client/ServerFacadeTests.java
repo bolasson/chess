@@ -1,5 +1,6 @@
 package client;
 
+import dataaccess.DataAccessException;
 import server.Server;
 import serverfacade.ServerFacade;
 import org.junit.jupiter.api.*;
@@ -60,10 +61,14 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void testLogout() throws Exception {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            facade.logout("authToken");
-        });
+    public void logoutSuccess() throws Exception {
+        var authData = facade.register("logoutUser", "password123", "logoutUser@example.com");
+        assertDoesNotThrow(() -> facade.logout(authData.authToken()));
+    }
+
+    @Test
+    public void logoutFailureNotLoggedIn() throws Exception {
+        assertThrows(Exception.class, () -> facade.logout("nonExistent"));
     }
 
     @Test

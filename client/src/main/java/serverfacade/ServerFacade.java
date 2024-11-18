@@ -57,7 +57,12 @@ public class ServerFacade {
     }
 
     public void logout(String authToken) throws Exception {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        URL url = new URL(serverUrl + "/session");
+        HttpURLConnection conn = createConnection(url, "DELETE");
+        conn.setRequestProperty("Authorization", authToken);
+        if (conn.getResponseCode() != 200) {
+            throw new Exception(readError(conn));
+        }
     }
 
     public GameData createGame(String gameName, String authToken) throws Exception {
