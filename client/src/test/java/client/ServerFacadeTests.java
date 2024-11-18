@@ -28,20 +28,20 @@ public class ServerFacadeTests {
         facade.clearDatabase();
     }
 
-//    @Test
-//    void registerSuccess() throws Exception {
-//        var authData = facade.register("player1", "password", "p1@email.com");
-//        assertNotNull(authData.authToken());
-//        assertTrue(authData.authToken().length() > 10);
-//    }
-//
-//    @Test
-//    void registerFailureDuplicateUser() {
-//        Assertions.assertThrows(Exception.class, () -> {
-//            facade.register("player1", "password", "p1@email.com");
-//            facade.register("player1", "password", "p1@email.com");
-//        });
-//    }
+    @Test
+    void registerSuccess() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        assertNotNull(authData.authToken());
+        assertTrue(authData.authToken().length() > 10);
+    }
+
+    @Test
+    void registerFailureDuplicateUser() {
+        Assertions.assertThrows(Exception.class, () -> {
+            facade.register("player1", "password", "p1@email.com");
+            facade.register("player1", "password", "p1@email.com");
+        });
+    }
 
     @Test
     public void testLogin() throws Exception {
