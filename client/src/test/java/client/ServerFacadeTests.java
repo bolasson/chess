@@ -1,7 +1,5 @@
 package client;
 
-import model.AuthData;
-import model.GameData;
 import server.Server;
 import serverfacade.ServerFacade;
 import org.junit.jupiter.api.*;
@@ -25,6 +23,11 @@ public class ServerFacadeTests {
         server.stop();
     }
 
+    @BeforeEach
+    public void clearData() throws Exception {
+        facade.clearDatabase();
+    }
+
 //    @Test
 //    void registerSuccess() throws Exception {
 //        var authData = facade.register("player1", "password", "p1@email.com");
@@ -41,7 +44,44 @@ public class ServerFacadeTests {
 //    }
 
     @Test
-    public void sampleTest() {
-        assertTrue(true);
+    public void testLogin() throws Exception {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            facade.login("username", "password");
+        });
+    }
+
+    @Test
+    public void testLogout() throws Exception {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            facade.logout("authToken");
+        });
+    }
+
+    @Test
+    public void testCreateGame() throws Exception {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            facade.createGame("Test Game", "authToken");
+        });
+    }
+
+    @Test
+    public void testListGames() throws Exception {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            facade.listGames("authToken");
+        });
+    }
+
+    @Test
+    public void testJoinGame() throws Exception {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            facade.joinGame(1, "WHITE", "authToken");
+        });
+    }
+
+    @Test
+    public void testObserveGame() throws Exception {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            facade.observeGame(1, "authToken");
+        });
     }
 }
