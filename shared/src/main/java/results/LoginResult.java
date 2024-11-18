@@ -1,4 +1,4 @@
-package service.results;
+package results;
 
 public record LoginResult(boolean success, String authToken, String username, String message, int statusCode) {
     public LoginResult(boolean success, String authToken, String username) {

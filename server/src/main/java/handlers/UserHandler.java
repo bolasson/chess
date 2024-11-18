@@ -2,11 +2,11 @@ package handlers;
 
 import com.google.gson.Gson;
 import service.UserService;
-import service.requests.RegisterRequest;
-import service.results.RegisterResult;
-import service.requests.LoginRequest;
-import service.results.LoginResult;
-import service.results.LogoutResult;
+import requests.RegisterRequest;
+import results.RegisterResult;
+import requests.LoginRequest;
+import results.LoginResult;
+import results.LogoutResult;
 import spark.Request;
 import spark.Response;
 import spark.Route;

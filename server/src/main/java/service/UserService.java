@@ -5,11 +5,11 @@ import dataaccess.IAuthDAO;
 import dataaccess.IUserDAO;
 import model.AuthData;
 import model.UserData;
-import service.requests.LoginRequest;
-import service.requests.RegisterRequest;
-import service.results.LoginResult;
-import service.results.LogoutResult;
-import service.results.RegisterResult;
+import requests.LoginRequest;
+import requests.RegisterRequest;
+import results.LoginResult;
+import results.LogoutResult;
+import results.RegisterResult;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {

@@ -2,11 +2,11 @@ package handlers;
 
 import com.google.gson.Gson;
 import service.GameService;
-import service.requests.CreateGameRequest;
-import service.results.CreateGameResult;
-import service.requests.JoinGameRequest;
-import service.results.JoinGameResult;
-import service.results.ListGamesResult;
+import requests.CreateGameRequest;
+import results.CreateGameResult;
+import requests.JoinGameRequest;
+import results.JoinGameResult;
+import results.ListGamesResult;
 import spark.Request;
 import spark.Response;
 import spark.Route;

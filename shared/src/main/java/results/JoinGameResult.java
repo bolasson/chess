@@ -1,4 +1,4 @@
-package service.results;
+package results;
 
 public record JoinGameResult(boolean success, String message, int statusCode) {
     public JoinGameResult(boolean success) {

@@ -1,6 +1,7 @@
-package service.results;
+package results;
 
 import model.GameData;
+
 import java.util.List;
 
 public record ListGamesResult(boolean success, List<GameData> games, String message) {
