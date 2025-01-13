@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -10,8 +11,30 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    public ChessGame() {
+    private ChessBoard chessBoard;
+    private TeamColor activeTeamColor;
 
+    public ChessGame(ChessBoard board, TeamColor startTeam) {
+        chessBoard = board;
+        activeTeamColor = startTeam;
+    }
+
+    public ChessGame(ChessBoard board) {
+        chessBoard = board;
+        activeTeamColor = TeamColor.WHITE;
+    }
+
+    public ChessGame(TeamColor startTeam) {
+        chessBoard = new ChessBoard();
+        activeTeamColor = startTeam;
+        chessBoard.resetBoard();
+    }
+
+    public ChessGame() {
+        chessBoard = new ChessBoard();
+        activeTeamColor = TeamColor.WHITE;
+        DisplayGame.displayBoard(chessBoard.getBoard());
+        chessBoard.resetBoard();
     }
 
     /**
