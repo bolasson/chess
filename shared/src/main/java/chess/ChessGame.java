@@ -3,6 +3,8 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
+// All tests passed on 1/15/25
+
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -79,7 +81,7 @@ public class ChessGame {
         }
         setTeamTurn(piece.getTeamColor());
         Collection<ChessMove> moves = piece.pieceMoves(chessBoard,startPosition);
-        Collection<ChessMove> validMoves = new ArrayList<ChessMove>();
+        Collection<ChessMove> validMoves = new ArrayList<>();
         ChessBoard savedBoard = new ChessBoard(getBoard());
         for (ChessMove move : moves) {
             setBoard(new ChessBoard(savedBoard));
