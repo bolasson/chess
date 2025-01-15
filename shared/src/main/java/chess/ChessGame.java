@@ -41,7 +41,7 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return activeTeamColor;
     }
 
     /**
@@ -50,7 +50,11 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        activeTeamColor = team;
+    }
+
+    public TeamColor oppositeTeamColor(TeamColor myTeamColor) {
+        return myTeamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
     }
 
     /**
