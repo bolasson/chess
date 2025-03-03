@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.IAuthDAO;
-import dataaccess.IUserDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import jdk.jfr.Description;
 import model.AuthData;
 import model.UserData;
