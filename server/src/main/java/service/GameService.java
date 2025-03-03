@@ -68,6 +68,8 @@ public class GameService {
                 game = new GameData(game.gameID(), authData.username(), game.blackUsername(), game.gameName(), game.game());
             } else if (request.playerColor().equals("BLACK") && game.blackUsername() == null) {
                 game = new GameData(game.gameID(), game.whiteUsername(), authData.username(), game.gameName(), game.game());
+            } else if (!request.playerColor().equals("WHITE") && !request.playerColor().equals("BLACK")) {
+                return new JoinGameResult(false, "Error: color is not valid", 400);
             } else {
                 return new JoinGameResult(false, "Error: color already taken", 403);
             }
