@@ -33,7 +33,33 @@ public class DatabaseManager {
         }
     }
 
+    public static void initializeDatabase() throws DataAccessException {
+        createDatabase(); // Create database if it doesn’t exist
 
+        // Create tables if they don’t exist
+        try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Users (" +
+                    "username VARCHAR(255) PRIMARY KEY, " +
+                    "hashed_password VARCHAR(255) NOT NULL, " +
+                    "email VARCHAR(255) NOT NULL)");
+
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Games (" +
+                    "gameID INT AUTO_INCREMENT PRIMARY KEY, " +
+                    "whiteUsername VARCHAR(255), " +
+                    "blackUsername VARCHAR(255), " +
+                    "gameName VARCHAR(255), " +
+                    "gameState JSON, " +
+                    "FOREIGN KEY (whiteUsername) REFERENCES Users(username) ON DELETE SET NULL, " +
+                    "FOREIGN KEY (blackUsername) REFERENCES Users(username) ON DELETE SET NULL)");
+
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS AuthTokens (" +
+                    "authToken VARCHAR(255) PRIMARY KEY, " +
+                    "username VARCHAR(255) NOT NULL, " +
+                    "FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE)");
+        } catch (SQLException e) {
+            System.err.println("Error initializing database tables: " + e.getMessage());
+        }
+    }
 
     /**
      * Creates the database if it does not already exist.
