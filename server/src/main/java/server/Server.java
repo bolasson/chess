@@ -15,9 +15,9 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        IUserDAO userDAO = new MemoryUserDAO();
-        IAuthDAO authDAO = new MemoryAuthDAO();
-        IGameDAO gameDAO = new MemoryGameDAO();
+        IUserDAO userDAO = new SQLUserDAO();
+        IAuthDAO authDAO = new SQLAuthDAO();
+        IGameDAO gameDAO = new SQLGameDAO();
         UserService userService = new UserService(userDAO, authDAO);
         GameService gameService = new GameService(gameDAO, authDAO);
         AuthService authService = new AuthService(authDAO);
