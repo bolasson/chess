@@ -8,6 +8,7 @@ public class DatabaseManager {
     private static final String USER;
     private static final String PASSWORD;
     private static final String CONNECTION_URL;
+    private static final String HOST;
 
     /*
      * Load the database information for the db.properties file.
@@ -24,9 +25,9 @@ public class DatabaseManager {
                 USER = props.getProperty("db.user");
                 PASSWORD = props.getProperty("db.password");
 
-                var host = props.getProperty("db.host");
+                HOST = props.getProperty("db.host");
                 var port = Integer.parseInt(props.getProperty("db.port"));
-                CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
+                CONNECTION_URL = String.format("jdbc:mysql://%s:%d", HOST, port);
             }
         } catch (Exception ex) {
             throw new RuntimeException("unable to process db.properties. " + ex.getMessage());

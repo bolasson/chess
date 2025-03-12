@@ -13,6 +13,13 @@ import spark.Spark;
 public class Server {
 
     public int run(int desiredPort) {
+        try {
+            DatabaseManager.initializeDatabase();
+        } catch (Exception e) {
+            System.err.println("Error initializing database: " + e.getMessage());
+            return -1;
+        }
+
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
