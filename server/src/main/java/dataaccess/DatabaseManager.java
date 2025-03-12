@@ -36,7 +36,7 @@ public class DatabaseManager {
     public static void initializeDatabase() throws DataAccessException {
         createDatabase(); // Create database if it doesn’t exist
 
-        // Create tables if they don’t exist
+        // Create tables if they don’t exist.
         try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Users (" +
                     "username VARCHAR(255) PRIMARY KEY, " +
