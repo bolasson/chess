@@ -1,7 +1,10 @@
-package dataaccess;
+package dataaccess.SQL;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
+import dataaccess.IGameDAO;
 import model.GameData;
 
 import java.sql.Connection;
@@ -18,7 +21,7 @@ public class SQLGameDAO implements IGameDAO {
     public void clear() throws DataAccessException {
         String sql = "DELETE FROM Games";
         try (Connection conn = DatabaseManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Error clearing Games table: " + e.getMessage());

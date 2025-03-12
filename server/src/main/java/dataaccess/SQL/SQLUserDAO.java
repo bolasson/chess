@@ -1,5 +1,8 @@
-package dataaccess;
+package dataaccess.SQL;
 
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
+import dataaccess.IUserDAO;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -14,7 +17,7 @@ public class SQLUserDAO implements IUserDAO {
     public void clear() throws DataAccessException {
         String sql = "DELETE FROM Users";
         try (Connection conn = DatabaseManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Error clearing Users table: " + e.getMessage());

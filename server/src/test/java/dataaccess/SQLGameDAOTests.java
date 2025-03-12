@@ -1,6 +1,8 @@
 package dataaccess;
 
 import chess.ChessGame;
+import dataaccess.SQL.SQLGameDAO;
+import dataaccess.SQL.SQLUserDAO;
 import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.AfterEach;

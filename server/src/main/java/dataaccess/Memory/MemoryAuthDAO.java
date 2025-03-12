@@ -1,5 +1,7 @@
-package dataaccess;
+package dataaccess.Memory;
 
+import dataaccess.DataAccessException;
+import dataaccess.IAuthDAO;
 import model.AuthData;
 
 import java.util.HashMap;
