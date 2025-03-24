@@ -5,8 +5,8 @@ import java.util.Scanner;
 public class REPL {
     private final Client client;
 
-    public REPL(String serverUrl) {
-        this.client = new Client(serverUrl);
+    public REPL(String serverURL) {
+        this.client = new Client(serverURL);
     }
 
     public void run() {
@@ -16,7 +16,7 @@ public class REPL {
         do {
             System.out.print(">>> ");
             input = scanner.nextLine();
-            String output = client.evaluateCommand(input);
+            String output = client.evaluateCommand(input, scanner);
             if (!output.isEmpty()) {
                 System.out.println(output);
             }

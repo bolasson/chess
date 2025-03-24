@@ -17,21 +17,32 @@ public class Client {
         this.currentState = State.PRELOGIN;
     }
 
-    public String evaluateCommand(String input) {
+    public String evaluateCommand(String input, java.util.Scanner scanner) {
         String command = input.trim().toLowerCase();
-        switch (command) {
-            case "help":
-                return getHelpText();
-            case "quit":
-                return "";
-            case "login":
-                return login();
-            case "register":
-                return register();
-            case "logout":
-                return logout();
-            default:
-                return "Unknown command. Type 'help' for available commands.";
+        if (currentState == State.PRELOGIN) {
+            switch (command) {
+                case "help":
+                    return getHelpText();
+                case "quit":
+                    return "";
+                case "login":
+                    return login(scanner);
+                case "register":
+                    return register(scanner);
+                default:
+                    return "Unknown command. Type 'help' for available commands.";
+            }
+        } else {
+            switch (command) {
+                case "help":
+                    return getHelpText();
+                case "quit":
+                    return "";
+                case "logout":
+                    return logout();
+                default:
+                    return "Unknown command. Type 'help' for available commands.";
+            }
         }
     }
 
@@ -53,14 +64,31 @@ public class Client {
         }
     }
 
-    private String login() {
+    private String login(java.util.Scanner scanner) {
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+
+        String response = server.login(username, password);
+
         currentState = State.POSTLOGIN;
-        return server.login("user", "password") + "Type 'help' to see available commands.";
+        return response + "Type 'help' to see available commands.";
     }
 
-    private String register() {
+
+    private String register(java.util.Scanner scanner) {
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+        System.out.print("Enter email: ");
+        String email = scanner.nextLine();
+
+        String response = server.register(username, password, email);
+
         currentState = State.POSTLOGIN;
-        return server.register("user", "password", "email@example.com") + "Type 'help' to see available commands.";
+        return response + "Type 'help' to see available commands.";
     }
 
     private String logout() {
