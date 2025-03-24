@@ -9,8 +9,10 @@ public class Client {
 
     private State currentState;
     private final String serverURL;
+    private ServerFacade server;
 
     public Client(String serverURL) {
+        this.server = new ServerFacade(serverURL);
         this.serverURL = serverURL;
         this.currentState = State.PRELOGIN;
     }
@@ -53,16 +55,16 @@ public class Client {
 
     private String login() {
         currentState = State.POSTLOGIN;
-        return "Logged in successfully. Type 'help' to see available commands.";
+        return server.login("user", "password") + "Type 'help' to see available commands.";
     }
 
     private String register() {
         currentState = State.POSTLOGIN;
-        return "Registered and logged in successfully. Type 'help' to see available commands.";
+        return server.register("user", "password", "email@example.com") + "Type 'help' to see available commands.";
     }
 
     private String logout() {
         currentState = State.PRELOGIN;
-        return "Logged out successfully. Type 'help' to see available commands.";
+        return server.logout("authToken") + "Type 'help' to see available commands.";
     }
 }

@@ -8,30 +8,30 @@ public class ServerFacade {
     }
     
     public String login(String username, String password) {
-        return "Login successful for user: " + username;
+        return "Login successful for " + username + "\n";
     }
 
     public String register(String username, String password, String email) {
-        return "Registration successful for user: " + username;
+        return "Registration successful for " + username + "\n";
     }
 
     public String logout(String authToken) {
-        return "Logout successful.";
+        return "Logout successful." + "\n";
     }
 
     public String createGame(String gameName, String authToken) {
-        return "Game created with name: " + gameName;
+        return "Game created with name " + gameName + "\n";
     }
 
     public String listGames(String authToken) {
-        return "Games: [Game1, Game2, Game3]";
+        return "Active games [Game1, Game2, Game3]" + "\n";
     }
 
     public String joinGame(int gameId, String color, String authToken) {
-        return "Join game with gameID " + gameId + " as " + color;
+        return "Joined game with gameID " + gameId + " as " + color + "\n";
     }
     
     public String observeGame(int gameID, String authToken) {
-        return "Observe game with gameID " + gameID;
+        return "Observing game with gameID " + gameID + "\n";
     }
 }
