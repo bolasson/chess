@@ -1,5 +1,8 @@
 package client;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Client {
 
     private enum State {
@@ -11,6 +14,7 @@ public class Client {
     private final String serverURL;
     private ServerFacade server;
     private String authToken = "authToken";
+    private static final List<String> quitStrings = Arrays.asList("quit", "exit", "stop", "close", "q", "e", "s","c");
 
     public Client(String serverURL) {
         this.server = new ServerFacade(serverURL);
@@ -56,7 +60,7 @@ public class Client {
                     return listGames();
                 case "play game":
                     return playGame(scanner);
-                case "observer game":
+                case "observe game":
                     return observeGame(scanner);
                 default:
                     return "Unknown command. Type 'help' for available commands.";
@@ -129,16 +133,27 @@ public class Client {
         System.out.print("Enter game number: ");
         String gameNumberStr = scanner.nextLine();
         int gameNumber;
-        try {
-            gameNumber = Integer.parseInt(gameNumberStr);
-        } catch (NumberFormatException e) {
-            return "Invalid game number. Please enter a valid integer.";
+        while (true) {
+            try {
+                String finalGameNumberStr = gameNumberStr;
+                if (quitStrings.stream().anyMatch(s -> s.equalsIgnoreCase(finalGameNumberStr))) {
+                    return "Leaving play game operation.";
+                }
+
+                gameNumber = Integer.parseInt(gameNumberStr);
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid game number. Please enter a valid integer.");
+                gameNumberStr = scanner.nextLine();
+            }
         }
         System.out.print("Enter desired color (white/black): ");
         String color = scanner.nextLine().toLowerCase();
         if (!color.equals("white") && !color.equals("w") && !color.equals("black") && !color.equals("b")) {
             return "Invalid color. Please enter 'white' or 'black'.";
         }
+        if (color.equals("w")) color = "white";
+        if (color.equals("b")) color = "black";
         return server.joinGame(gameNumber, color, authToken);
     }
 
@@ -146,10 +161,19 @@ public class Client {
         System.out.print("Enter game number to observe: ");
         String gameNumberStr = scanner.nextLine();
         int gameNumber;
-        try {
-            gameNumber = Integer.parseInt(gameNumberStr);
-        } catch (NumberFormatException e) {
-            return "Invalid game number. Please enter a valid integer.";
+        while (true) {
+            try {
+                String finalGameNumberStr = gameNumberStr;
+                if (quitStrings.stream().anyMatch(s -> s.equalsIgnoreCase(finalGameNumberStr))) {
+                    return "Leaving observe game operation.";
+                }
+
+                gameNumber = Integer.parseInt(gameNumberStr);
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid game number. Please enter a valid integer.");
+                gameNumberStr = scanner.nextLine();
+            }
         }
         return server.observeGame(gameNumber, authToken);
     }
