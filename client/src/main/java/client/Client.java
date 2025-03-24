@@ -10,6 +10,7 @@ public class Client {
     private State currentState;
     private final String serverURL;
     private ServerFacade server;
+    private String authToken = "authToken";
 
     public Client(String serverURL) {
         this.server = new ServerFacade(serverURL);
@@ -36,10 +37,15 @@ public class Client {
             switch (command) {
                 case "help":
                     return getHelpText();
-                case "quit":
-                    return "";
                 case "logout":
                     return logout();
+                case "quit":
+                    logout();
+                    return "";
+                case "create game":
+                    return createGame(scanner);
+                case "list games":
+                    return listGames();
                 default:
                     return "Unknown command. Type 'help' for available commands.";
             }
@@ -50,7 +56,7 @@ public class Client {
         if (currentState == State.PRELOGIN) {
             return "Prelogin Commands:\n" +
                     "- help: Display this help text\n" +
-                    "- quit: Exit the application\n" +
+                     "- quit: Exit the application\n" +
                     "- login: Login to your account\n" +
                     "- register: Register a new account";
         } else {
@@ -64,6 +70,7 @@ public class Client {
         }
     }
 
+// Prelogin Options
     private String login(java.util.Scanner scanner) {
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
@@ -75,7 +82,6 @@ public class Client {
         currentState = State.POSTLOGIN;
         return response + "Type 'help' to see available commands.";
     }
-
 
     private String register(java.util.Scanner scanner) {
         System.out.print("Enter username: ");
@@ -91,8 +97,19 @@ public class Client {
         return response + "Type 'help' to see available commands.";
     }
 
+// Postlogin Options
     private String logout() {
         currentState = State.PRELOGIN;
         return server.logout("authToken") + "Type 'help' to see available commands.";
+    }
+
+    private String createGame(java.util.Scanner scanner) {
+        System.out.print("Enter game name: ");
+        String gameName = scanner.nextLine();
+        return server.createGame(gameName, authToken);
+    }
+
+    private String listGames() {
+        return server.listGames(authToken);
     }
 }
