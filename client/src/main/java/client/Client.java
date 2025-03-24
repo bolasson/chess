@@ -28,6 +28,7 @@ public class Client {
                     return getHelpText();
                 case "q":
                 case "quit":
+                case "exit":
                     return "";
                 case "login":
                     return login(scanner);
@@ -46,6 +47,7 @@ public class Client {
                     return logout();
                 case "q":
                 case "quit":
+                case "exit":
                     logout();
                     return "";
                 case "create game":

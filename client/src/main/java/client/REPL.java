@@ -19,9 +19,11 @@ public class REPL {
             String output = client.evaluateCommand(input, scanner);
             if (!output.isEmpty()) {
                 System.out.println(output);
+            } else {
+                break;
             }
         } while (!input.equalsIgnoreCase("quit"));
-        System.out.println("Exiting Chess Client. Goodbye!");
+        System.out.println("Exiting application. Goodbye!");
         scanner.close();
     }
 }
