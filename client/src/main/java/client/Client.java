@@ -26,6 +26,8 @@ public class Client {
                 return login();
             case "register":
                 return register();
+            case "logout":
+                return logout();
             default:
                 return "Unknown command. Type 'help' for available commands.";
         }
@@ -51,11 +53,16 @@ public class Client {
 
     private String login() {
         currentState = State.POSTLOGIN;
-        return "Logged in successfully. Transitioning to Postlogin UI.";
+        return "Logged in successfully. Type 'help' to see available commands.";
     }
 
     private String register() {
         currentState = State.POSTLOGIN;
-        return "Registered and logged in successfully. Transitioning to Postlogin UI.";
+        return "Registered and logged in successfully. Type 'help' to see available commands.";
+    }
+
+    private String logout() {
+        currentState = State.PRELOGIN;
+        return "Logged out successfully. Type 'help' to see available commands.";
     }
 }
