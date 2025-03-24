@@ -22,8 +22,11 @@ public class Client {
         String command = input.trim().toLowerCase();
         if (currentState == State.PRELOGIN) {
             switch (command) {
+                case "h":
+                case "-h":
                 case "help":
                     return getHelpText();
+                case "q":
                 case "quit":
                     return "";
                 case "login":
@@ -35,10 +38,13 @@ public class Client {
             }
         } else {
             switch (command) {
+                case "h":
+                case "-h":
                 case "help":
                     return getHelpText();
                 case "logout":
                     return logout();
+                case "q":
                 case "quit":
                     logout();
                     return "";
@@ -46,6 +52,10 @@ public class Client {
                     return createGame(scanner);
                 case "list games":
                     return listGames();
+                case "play game":
+                    return playGame(scanner);
+                case "observer game":
+                    return observeGame(scanner);
                 default:
                     return "Unknown command. Type 'help' for available commands.";
             }
@@ -56,7 +66,7 @@ public class Client {
         if (currentState == State.PRELOGIN) {
             return "Prelogin Commands:\n" +
                     "- help: Display this help text\n" +
-                     "- quit: Exit the application\n" +
+                    "- quit: Exit the application\n" +
                     "- login: Login to your account\n" +
                     "- register: Register a new account";
         } else {
@@ -111,5 +121,34 @@ public class Client {
 
     private String listGames() {
         return server.listGames(authToken);
+    }
+
+    private String playGame(java.util.Scanner scanner) {
+        System.out.print("Enter game number: ");
+        String gameNumberStr = scanner.nextLine();
+        int gameNumber;
+        try {
+            gameNumber = Integer.parseInt(gameNumberStr);
+        } catch (NumberFormatException e) {
+            return "Invalid game number. Please enter a valid integer.";
+        }
+        System.out.print("Enter desired color (white/black): ");
+        String color = scanner.nextLine().toLowerCase();
+        if (!color.equals("white") && !color.equals("w") && !color.equals("black") && !color.equals("b")) {
+            return "Invalid color. Please enter 'white' or 'black'.";
+        }
+        return server.joinGame(gameNumber, color, authToken);
+    }
+
+    private String observeGame(java.util.Scanner scanner) {
+        System.out.print("Enter game number to observe: ");
+        String gameNumberStr = scanner.nextLine();
+        int gameNumber;
+        try {
+            gameNumber = Integer.parseInt(gameNumberStr);
+        } catch (NumberFormatException e) {
+            return "Invalid game number. Please enter a valid integer.";
+        }
+        return server.observeGame(gameNumber, authToken);
     }
 }

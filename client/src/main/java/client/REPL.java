@@ -10,7 +10,7 @@ public class REPL {
     }
 
     public void run() {
-        System.out.println("Welcome to the Chess Client. Type 'help' to see available commands.");
+        System.out.println("Welcome to my chess application. Type 'help' to see available commands.");
         Scanner scanner = new Scanner(System.in);
         String input;
         do {
