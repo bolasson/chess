@@ -102,7 +102,7 @@ public class ServerFacadeTests {
     @Test
     public void createGameFailureInvalidAuth() {
         ResponseException ex = assertThrows(ResponseException.class, () -> serverFacade.createGame("Invalid Auth Game", "invalidAuthToken"));
-        assertTrue(ex.getMessage().toLowerCase().contains("not found"), "Expected unauthorized error message for createGame with invalid auth token");
+        assertTrue(ex.getMessage().toLowerCase().contains("not found"), "Expected unauthorized error message");
     }
 
     @Test
@@ -120,7 +120,7 @@ public class ServerFacadeTests {
     @Test
     public void listGamesFailureInvalidAuth() {
         ResponseException ex = assertThrows(ResponseException.class, () -> serverFacade.listGames("invalidAuthToken"));
-        assertTrue(ex.getMessage().toLowerCase().contains("unauthorized"), "Expected unauthorized error message for listGames with invalid auth token");
+        assertTrue(ex.getMessage().toLowerCase().contains("unauthorized"), "Expected unauthorized error message");
     }
 
     @Test

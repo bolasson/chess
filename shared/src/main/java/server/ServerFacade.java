@@ -9,7 +9,7 @@ import java.net.*;
 
 public class ServerFacade {
     private final String serverURL;
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
 
     public ServerFacade(String serverURL) {
         this.serverURL = serverURL;
@@ -91,7 +91,7 @@ public class ServerFacade {
             }
             if (request != null) {
                 connection.setRequestProperty("Content-Type", "application/json");
-                String jsonRequest = gson.toJson(request);
+                String jsonRequest = GSON.toJson(request);
                 try (OutputStream os = connection.getOutputStream()) {
                     os.write(jsonRequest.getBytes());
                 }
@@ -102,7 +102,7 @@ public class ServerFacade {
                     ? connection.getInputStream()
                     : connection.getErrorStream();
             try (Reader reader = new InputStreamReader(is)) {
-                return gson.fromJson(reader, responseClass);
+                return GSON.fromJson(reader, responseClass);
             }
         } catch (Exception e) {
             throw new ResponseException(500, e.getMessage());

@@ -12,7 +12,7 @@ public class REPL {
     }
 
     public void run() {
-        System.out.println("Welcome to my chess application. Type '" + Client.Keyword("h") + "elp' to see available commands.");
+        System.out.println("Welcome to my chess application. Type '" + Client.keyword("h") + "elp' to see available commands.");
         Scanner scanner = new Scanner(System.in);
         String input;
         do {

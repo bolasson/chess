@@ -25,7 +25,7 @@ public class MiniREPL {
                     break;
                 }
             } catch (Exception e) {
-                System.out.print(Client.ErrorMessage(e.getMessage()) + "\n" + prompt);
+                System.out.print(Client.errorMessage(e.getMessage()) + "\n" + prompt);
                 input = scanner.nextLine();
             }
         }
