@@ -1,14 +1,11 @@
 package server;
 
 import com.google.gson.Gson;
-import model.GameData;
 import requests.*;
 import results.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ServerFacade {
     private final String serverURL;
@@ -36,12 +33,11 @@ public class ServerFacade {
         return result;
     }
 
-    public LogoutResult logout(String authToken) throws ResponseException {
+    public void logout(String authToken) throws ResponseException {
         LogoutResult result = makeRequest("DELETE", "/session", null, LogoutResult.class, authToken);
         if (!result.success()) {
             throw new ResponseException(400, result.message());
         }
-        return result;
     }
 
     public CreateGameResult createGame(String gameName, String authToken) throws ResponseException {
@@ -62,20 +58,19 @@ public class ServerFacade {
         return result;
     }
 
-    public JoinGameResult joinGame(int gameId, String color, String authToken) throws ResponseException {
+    public void joinGame(int gameId, String color, String authToken) throws ResponseException {
         JoinGameRequest req = new JoinGameRequest(authToken, gameId, color.toUpperCase());
         JoinGameResult result = makeRequest("PUT", "/game", req, JoinGameResult.class, authToken);
         if (!result.success()) {
             throw new ResponseException(result.statusCode(), result.message());
         }
-        return result;
     }
 
-    public String observeGame(int gameId, String gameName, String authToken) throws ResponseException {
+    public String observeGame(int gameID, String gameName, String authToken) throws ResponseException {
         if (authToken.isEmpty()) {
             throw new ResponseException(401, "You are unauthorized to perform this operation");
         }
-        return "Observing the game '" + gameName + "'";
+        return "Observing the game '" + gameName + "' with gameID '" + gameID + "'";
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
@@ -105,8 +100,7 @@ public class ServerFacade {
                     ? connection.getInputStream()
                     : connection.getErrorStream();
             try (Reader reader = new InputStreamReader(is)) {
-                T response = gson.fromJson(reader, responseClass);
-                return response;
+                return gson.fromJson(reader, responseClass);
             }
         } catch (Exception e) {
             throw new ResponseException(500, e.getMessage());

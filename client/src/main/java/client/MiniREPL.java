@@ -1,7 +1,5 @@
 package client;
 
-import ui.EscapeSequences;
-
 import java.util.Arrays;
 import java.util.List;
 
