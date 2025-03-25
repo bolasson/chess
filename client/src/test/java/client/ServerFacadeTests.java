@@ -61,6 +61,22 @@ public class ServerFacadeTests {
     }
 
     @Test
+    public void loginSuccess() throws ResponseException {
+        facade.register("user1", "toomanysecrets", "user1@example.com");
+        LoginResult loginResult = facade.login("user1", "toomanysecrets");
+        assertTrue(loginResult.success(), "Expected login to succeed");
+        assertNotNull(loginResult.authToken(), "Expected a valid authToken");
+        assertEquals("user1", loginResult.username(), "Expected username to match");
+    }
+
+    @Test
+    public void loginFailureWrongPassword() throws ResponseException {
+        facade.register("user1", "toomanysecrets", "user1@example.com");
+        ResponseException ex = assertThrows(ResponseException.class, () -> facade.login("user1", "toofewsecrets"));
+        assertTrue(ex.getMessage().toLowerCase().contains("invalid"), "Expected error message about invalid credentials");
+    }
+
+    @Test
     public void sampleTest() {
         assertTrue(true);
     }
