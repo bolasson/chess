@@ -1,5 +1,5 @@
 package client;
 
 public interface ValidateInput {
-    boolean validate(String input);
+    String isValid(String input) throws Exception;
 }

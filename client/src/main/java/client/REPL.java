@@ -17,7 +17,7 @@ public class REPL {
             System.out.print(">>> ");
             input = scanner.nextLine();
             String output = client.evaluateCommand(input, scanner);
-            if (!output.isEmpty()) {
+            if (output == null || !output.isEmpty()) {
                 System.out.println(output);
             } else {
                 break;

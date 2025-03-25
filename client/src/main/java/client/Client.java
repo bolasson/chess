@@ -83,6 +83,7 @@ public class Client {
             LoginResult response = server.login(username, password);
             currentState = State.POSTLOGIN;
             authToken = response.authToken();
+            UpdateGameList();
             return "Signed in as " + response.username() + ".\nType 'help' to see available commands.";
         } catch (ResponseException ex) {
             return "Login failed: " + ex.getMessage();
@@ -101,6 +102,7 @@ public class Client {
             RegisterResult response = server.register(username, password, email);
             currentState = State.POSTLOGIN;
             authToken = response.authToken();
+            UpdateGameList();
             return "Created and signed in as " + response.username() + ".\nType 'help' to see available commands.";
         } catch (ResponseException ex) {
             return "Registration failed: " + ex.getMessage();
@@ -124,8 +126,7 @@ public class Client {
         String gameName = scanner.nextLine();
         try {
             CreateGameResult createGameResult = server.createGame(gameName, authToken);
-            ListGamesResult listGamesResult = server.listGames(authToken);
-            UpdateGameList(listGamesResult.games());
+            UpdateGameList();
             int createGameIndex = 0;
             for (int i = 0; i < availableGames.size(); i++) {
                 if (availableGames.get(i).gameID() == createGameResult.gameID()) {
@@ -140,41 +141,50 @@ public class Client {
     }
 
     private String listGames() {
-        try {
-            ListGamesResult result = server.listGames(authToken);
-            UpdateGameList(result.games());
-            for (int i = 0; i < availableGames.size(); i++) {
-                GameData game = availableGames.get(i);
-                System.out.println((i+1) + game.toString());
-            }
-            return "\nTo join a game, enter 'play game' then provide the game number from the list above.";
-        } catch (ResponseException ex) {
-            return "Failed to list games: " + ex.getMessage();
+        UpdateGameList();
+        for (int i = 0; i < availableGames.size(); i++) {
+            GameData game = availableGames.get(i);
+            System.out.println((i+1) + game.toString());
         }
+        return "\nTo join a game, enter 'play game' then provide the game number from the list above.";
     }
 
-    private void UpdateGameList(List<GameData> games) {
-        availableGames.clear();
-        availableGames = games;
+    private void UpdateGameList() {
+        try {
+            ListGamesResult result = server.listGames(authToken);
+            availableGames.clear();
+            availableGames = result.games();
+        } catch (ResponseException ex) {
+            System.out.println("Failed to pull games from the database: " + ex.getMessage());
+        }
     }
 
     private String playGame(java.util.Scanner scanner) {
-        System.out.print("Enter game number: ");
-        String gameNumberStr = scanner.nextLine();
-        int gameNumber;
-        while (true) {
-            try {
-                String finalGameNumberStr = gameNumberStr;
-                if (quitStrings.stream().anyMatch(s -> s.equalsIgnoreCase(finalGameNumberStr))) {
-                    return "Leaving play game operation.";
-                }
-                gameNumber = Integer.parseInt(gameNumberStr);
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid game number. Please enter a valid integer.");
-                gameNumberStr = scanner.nextLine();
-            }
+        MiniREPL gameNumberREPL = new MiniREPL("Enter game number: ",
+                "Invalid game number. Please enter a valid integer.",
+                new ValidateInput() {
+                    @Override
+                    public String isValid(String input) throws Exception {
+                        int proposedGameID = 0;
+                        try {
+                            proposedGameID = Integer.parseInt(input);
+                        } catch (Exception e) {
+                            throw new Exception("Input must be an integer.");
+                        }
+                        if (availableGames.size() + 1 < proposedGameID) {
+                            throw new Exception("Game ID is not in game list. To view the game list enter 'exit', and then 'list games'.");
+                        }
+                        return "valid";
+                    }
+                });
+        String gameNumberResponse = gameNumberREPL.run(scanner);
+        GameData selectedGame = null;
+        if (gameNumberResponse.equalsIgnoreCase("quit")) {
+            return "The user quit the operation early.";
+        } else {
+            selectedGame = availableGames.get(Integer.parseInt(gameNumberResponse)-1);
         }
+
         System.out.print("Enter desired color (white/black): ");
         String color = scanner.nextLine().toLowerCase();
         if (!color.equals("white") && !color.equals("w") && !color.equals("black") && !color.equals("b")) {
@@ -183,7 +193,8 @@ public class Client {
         if (color.equals("w")) color = "white";
         if (color.equals("b")) color = "black";
         try {
-            return server.joinGame(gameNumber, color, authToken).message();
+            JoinGameResult result = server.joinGame(selectedGame.gameID(), color, authToken);
+            return "Joined the game '" + selectedGame.gameName() + "' as the " + color + " player.";
         } catch (ResponseException ex) {
             return "Failed to join game: " + ex.getMessage();
         }
