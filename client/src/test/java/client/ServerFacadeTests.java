@@ -126,8 +126,22 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void sampleTest() {
-        assertTrue(true);
+    public void joinGameSuccess() throws ResponseException {
+        RegisterResult reg = facade.register("user1", "toomanysecrets", "user1@example.com");
+        String authToken = reg.authToken();
+        CreateGameResult gameResult = facade.createGame("Test Game", authToken);
+        int gameId = gameResult.gameID();
+        JoinGameResult joinResult = facade.joinGame(gameId, "white", authToken);
+        assertTrue(joinResult.success(), "Expected joining the game to succeed");
     }
 
+    @Test
+    public void testJoinGameFailureInvalidColor() throws ResponseException {
+        RegisterResult reg = facade.register("user1", "toomanysecrets", "user1@example.com");
+        String authToken = reg.authToken();
+        CreateGameResult gameResult = facade.createGame("Test Game", authToken);
+        int gameId = gameResult.gameID();
+        ResponseException ex = assertThrows(ResponseException.class, () -> facade.joinGame(gameId, "byublue", authToken));
+        assertTrue(ex.getMessage().toLowerCase().contains("color"), "Expected error message regarding invalid color");
+    }
 }

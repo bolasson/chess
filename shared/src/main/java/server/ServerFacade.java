@@ -59,12 +59,13 @@ public class ServerFacade {
         return result;
     }
 
-    public void joinGame(int gameId, String color, String authToken) throws ResponseException {
+    public JoinGameResult joinGame(int gameId, String color, String authToken) throws ResponseException {
         JoinGameRequest req = new JoinGameRequest(authToken, gameId, color.toUpperCase());
         JoinGameResult result = makeRequest("PUT", "/game", req, JoinGameResult.class, authToken);
         if (!result.success()) {
             throw new ResponseException(result.statusCode(), result.message());
         }
+        return result;
     }
 
     public String observeGame(int gameID, String gameName, String authToken) throws ResponseException {
