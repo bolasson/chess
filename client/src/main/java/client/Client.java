@@ -1,6 +1,7 @@
 package client;
 
 import results.LoginResult;
+import results.LogoutResult;
 import results.RegisterResult;
 import server.ServerFacade;
 import server.ResponseException;
@@ -131,9 +132,9 @@ public class Client {
     private String logout() {
         try {
             currentState = State.PRELOGIN;
-            String response = server.logout(authToken);
+            LogoutResult response = server.logout(authToken);
             authToken = "";
-            return response + "Type 'help' to see available commands.";
+            return response.message() + ".\nType 'help' to see available commands.";
         } catch (ResponseException ex) {
             return "Logout failed: " + ex.getMessage();
         }
