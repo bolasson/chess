@@ -3,9 +3,9 @@ package client;
 import model.GameData;
 import org.junit.jupiter.api.*;
 import results.*;
-import server.ResponseException;
+import facade.ResponseException;
 import server.Server;
-import server.ServerFacade;
+import facade.ServerFacade;
 
 import java.net.HttpURLConnection;
 import java.net.URI;

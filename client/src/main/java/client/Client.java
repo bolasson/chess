@@ -2,8 +2,8 @@ package client;
 
 import model.GameData;
 import results.*;
-import server.ServerFacade;
-import server.ResponseException;
+import facade.ServerFacade;
+import facade.ResponseException;
 import ui.ChessBoardRenderer;
 import ui.EscapeSequences;
 
@@ -140,7 +140,9 @@ public class Client {
                     break;
                 }
             }
-            return "Game created with name " + createGameResult.gameName() + EscapeSequences.SET_TEXT_ITALIC + ".\nTo join this game, enter the command '" + keyword("p") + "lay game', then enter " + createGameIndex + EscapeSequences.RESET_TEXT_ITALIC;
+            return "Game created with name " + createGameResult.gameName() + EscapeSequences.SET_TEXT_ITALIC +
+                    ".\nTo join this game, enter the command '" + keyword("p") + "lay game', then enter " +
+                    createGameIndex + EscapeSequences.RESET_TEXT_ITALIC;
         } catch (ResponseException ex) {
             return errorMessage("Failed to create game: " + ex.getMessage());
         }
@@ -152,7 +154,9 @@ public class Client {
             GameData game = availableGames.get(i);
             System.out.println((i+1) + game.toString());
         }
-        return EscapeSequences.SET_TEXT_ITALIC + "\nTo join a game, enter '" + keyword("p") + "lay game' then provide the game ID from the list above." + EscapeSequences.RESET_TEXT_ITALIC;
+        return EscapeSequences.SET_TEXT_ITALIC + "\nTo join a game, enter '" +
+                keyword("p") + "lay game' then provide the game ID from the list above." +
+                EscapeSequences.RESET_TEXT_ITALIC;
     }
 
     private void updateGameList() {
@@ -173,7 +177,9 @@ public class Client {
         MiniREPL colorREPL = new MiniREPL("Enter desired color (white/black): ",
                 input -> {
                     if (!MiniREPL.listContainsValue(Arrays.asList("white", "w", "black", "b"),input)) {
-                        throw new Exception("Invalid color. Please enter '" + keyword("w") + setErrorFormating() + "hite' or '" + keyword("b") + setErrorFormating() + "lack'.");
+                        throw new Exception("Invalid color. Please enter '" +
+                                keyword("w") + setErrorFormating() + "hite' or '" +
+                                keyword("b") + setErrorFormating() + "lack'.");
                     }
                     return "valid";
                 });
@@ -216,7 +222,9 @@ public class Client {
     }
 
     public static String keyword(String message) {
-        return EscapeSequences.SET_TEXT_UNDERLINE + EscapeSequences.SET_TEXT_COLOR_YELLOW + message + EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.RESET_TEXT_UNDERLINE;
+        return EscapeSequences.SET_TEXT_UNDERLINE + EscapeSequences.SET_TEXT_COLOR_YELLOW +
+                message +
+                EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.RESET_TEXT_UNDERLINE;
     }
 
     private GameData getGameFromUser(java.util.Scanner scanner) {
@@ -229,7 +237,9 @@ public class Client {
                         throw new Exception("Input must be an integer.");
                     }
                     if (availableGames.size() + 1 < proposedGameID) {
-                        throw new Exception("Game ID is not in game list. To view the game list enter '" + keyword("e") + setErrorFormating() + "xit', and then '" + keyword("l") + setErrorFormating() + "ist games'.");
+                        throw new Exception("Game ID is not in game list. " +
+                                "To view the game list enter '" + keyword("e") + setErrorFormating() +
+                                "xit', and then '" + keyword("l") + setErrorFormating() + "ist games'.");
                     }
                     return "valid";
                 });

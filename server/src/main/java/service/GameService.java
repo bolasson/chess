@@ -65,14 +65,8 @@ public class GameService {
                 return new JoinGameResult(false, "Error: GameID is required", 400);
             }
             if (request.playerColor().equals("WHITE") && game.whiteUsername() == null) {
-//                if (game.blackUsername() != null && game.blackUsername().equals(authData.username())) {
-//                    return new JoinGameResult(false, "Error: User already joined as the black player", 400);
-//                }
                 game = new GameData(game.gameID(), authData.username(), game.blackUsername(), game.gameName(), game.game());
             } else if (request.playerColor().equals("BLACK") && game.blackUsername() == null) {
-//                if (game.whiteUsername() != null && game.whiteUsername().equals(authData.username())) {
-//                    return new JoinGameResult(false, "Error: User already joined as the white player", 400);
-//                }
                 game = new GameData(game.gameID(), game.whiteUsername(), authData.username(), game.gameName(), game.game());
             } else if (!request.playerColor().equals("WHITE") && !request.playerColor().equals("BLACK")) {
                 return new JoinGameResult(false, "Error: Color is not valid", 400);
