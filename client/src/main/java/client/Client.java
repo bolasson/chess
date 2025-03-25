@@ -4,6 +4,8 @@ import model.GameData;
 import results.*;
 import server.ServerFacade;
 import server.ResponseException;
+import ui.ChessBoardRenderer;
+import ui.EscapeSequences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,12 +13,13 @@ import java.util.List;
 
 public class Client {
 
-    private enum State {
-        PRE_LOGIN,
-        POST_LOGIN
+    public enum State {
+        LOGGED_OUT,
+        LOGGED_IN
     }
 
-    private State currentState;
+    public State currentState;
+    public String username;
     private final ServerFacade server;
     private String authToken = "";
     private final List<String> quitStrings = Arrays.asList("quit", "exit", "stop", "close", "q", "e", "s","c");
@@ -24,23 +27,23 @@ public class Client {
 
     public Client(String serverURL) {
         this.server = new ServerFacade(serverURL);
-        this.currentState = State.PRE_LOGIN;
+        this.currentState = State.LOGGED_OUT;
     }
 
     public String evaluateCommand(String input, java.util.Scanner scanner) {
         String command = input.trim().toLowerCase();
-        if (currentState == State.PRE_LOGIN) {
+        if (currentState == State.LOGGED_OUT) {
             return switch (command) {
                 case "help", "h" -> getHelpText();
                 case "quit", "q", "exit", "e" -> "";
                 case "login", "l" -> login(scanner);
                 case "register", "r" -> register(scanner);
-                default -> "Unknown command. Type 'help' for available commands.";
+                default -> "Unknown command.\n\nType 'help' for available commands.";
             };
         } else {
             return switch (command) {
                 case "help", "h" -> getHelpText();
-                case "logout" -> logout();
+                case "logout", "lo" -> logout();
                 case "quit", "q", "exit", "e" -> {
                     logout();
                     yield "";
@@ -49,26 +52,28 @@ public class Client {
                 case "list games", "list", "l" -> listGames();
                 case "play game", "play", "join game", "join", "p", "j" -> playGame(scanner);
                 case "observe game", "observe", "o" -> observeGame(scanner);
-                default -> "Unknown command. Type 'help' for available commands.";
+                default -> "Unknown command.\n\nType 'help' for available commands.";
             };
         }
     }
 
     private String getHelpText() {
-        if (currentState == State.PRE_LOGIN) {
-            return "Prelogin Commands:\n" +
-                    "- help: Display this help text\n" +
-                    "- quit: Exit the application\n" +
-                    "- login: Login to your account\n" +
-                    "- register: Register a new account";
+        if (currentState == State.LOGGED_OUT) {
+            return "Login Page:\n" +
+                    "- " + EscapeSequences.SET_TEXT_COLOR_YELLOW + "\u001b[4ml\u001b[24m" + EscapeSequences.RESET_TEXT_COLOR + "ogin: Login to your account\n" +
+                    "- " + EscapeSequences.SET_TEXT_COLOR_YELLOW + "\u001b[4mr\u001b[24m" + EscapeSequences.RESET_TEXT_COLOR + "egister: Register a new account\n" +
+                    "- " + EscapeSequences.SET_TEXT_COLOR_YELLOW + "\u001b[4mh\u001b[24m" + EscapeSequences.RESET_TEXT_COLOR + "elp: Display this help text\n" +
+                    "- " + EscapeSequences.SET_TEXT_COLOR_YELLOW + "\u001b[4mq\u001b[24m" + EscapeSequences.RESET_TEXT_COLOR + "uit: Exit the application\n";
         } else {
-            return "Postlogin Commands:\n" +
-                    "- help: Display this help text\n" +
-                    "- logout: Logout and return to Prelogin UI\n" +
-                    "- create game: Create a new game\n" +
-                    "- list games: List available games\n" +
-                    "- play game: Join a game as a player\n" +
-                    "- observe game: Join a game as an observer";
+            return "Main Menu:\n" +
+                    "- " + EscapeSequences.SET_TEXT_COLOR_YELLOW + "\u001b[4mc\u001b[24m" + EscapeSequences.RESET_TEXT_COLOR + "reate game: Create a new game\n" +
+                    "- " + EscapeSequences.SET_TEXT_COLOR_YELLOW + "\u001b[4ml\u001b[24m" + EscapeSequences.RESET_TEXT_COLOR + "ist games: List available games\n" +
+                    "- " + EscapeSequences.SET_TEXT_COLOR_YELLOW + "\u001b[4mp\u001b[24m" + EscapeSequences.RESET_TEXT_COLOR + "lay game: Join a game as a player\n" +
+                    "- " + EscapeSequences.SET_TEXT_COLOR_YELLOW + "\u001b[4mo\u001b[24m" + EscapeSequences.RESET_TEXT_COLOR + "bserve game: Join a game as an observer\n" +
+                    "- " + EscapeSequences.SET_TEXT_COLOR_YELLOW + "\u001b[4mlo\u001b[24m" + EscapeSequences.RESET_TEXT_COLOR + "gout: Logout and return to the login page\n" +
+                    "- " + EscapeSequences.SET_TEXT_COLOR_YELLOW + "\u001b[4mh\u001b[24m" + EscapeSequences.RESET_TEXT_COLOR + "elp: Display this help text\n" +
+                    "- " + EscapeSequences.SET_TEXT_COLOR_YELLOW + "\u001b[4mq\u001b[24m" + EscapeSequences.RESET_TEXT_COLOR + "uit: Exit the application\n";
+
         }
     }
 
@@ -81,10 +86,11 @@ public class Client {
 
         try {
             LoginResult response = server.login(username, password);
-            currentState = State.POST_LOGIN;
+            currentState = State.LOGGED_IN;
             authToken = response.authToken();
             UpdateGameList();
-            return "Signed in as " + response.username() + ".\nType 'help' to see available commands.";
+            this.username = response.username();
+            return "Signed in as " + this.username + ".\n\nType 'help' to see available commands.";
         } catch (ResponseException ex) {
             return "Login failed: " + ex.getMessage();
         }
@@ -100,10 +106,11 @@ public class Client {
 
         try {
             RegisterResult response = server.register(username, password, email);
-            currentState = State.POST_LOGIN;
+            currentState = State.LOGGED_IN;
             authToken = response.authToken();
             UpdateGameList();
-            return "Created and signed in as " + response.username() + ".\nType 'help' to see available commands.";
+            this.username = response.username();
+            return "Created and signed in as " + username + ".\n\nType 'help' to see available commands.";
         } catch (ResponseException ex) {
             return "Registration failed: " + ex.getMessage();
         }
@@ -112,10 +119,10 @@ public class Client {
 // Postlogin Options
     private String logout() {
         try {
-            currentState = State.PRE_LOGIN;
+            currentState = State.LOGGED_OUT;
             LogoutResult response = server.logout(authToken);
             authToken = "";
-            return response.message() + ".\nType 'help' to see available commands.";
+            return "Logged out successfully.\n\nType 'help' to see available commands.";
         } catch (ResponseException ex) {
             return "Logout failed: " + ex.getMessage();
         }
@@ -134,7 +141,7 @@ public class Client {
                     break;
                 }
             }
-            return "Game created with name " + createGameResult.gameName() + ".\nTo join this game, enter the command 'play game', then enter " + createGameIndex;
+            return "Game created with name " + createGameResult.gameName() + EscapeSequences.SET_TEXT_ITALIC + ".\nTo join this game, enter the command 'play game', then enter " + createGameIndex + EscapeSequences.RESET_TEXT_ITALIC;
         } catch (ResponseException ex) {
             return "Failed to create game: " + ex.getMessage();
         }
@@ -146,7 +153,7 @@ public class Client {
             GameData game = availableGames.get(i);
             System.out.println((i+1) + game.toString());
         }
-        return "\nTo join a game, enter 'play game' then provide the game number from the list above.";
+        return EscapeSequences.SET_TEXT_ITALIC + "\nTo join a game, enter 'play game' then provide the game number from the list above." + EscapeSequences.RESET_TEXT_ITALIC;
     }
 
     private void UpdateGameList() {
@@ -199,6 +206,7 @@ public class Client {
         if (color.equals("b")) color = "black";
         try {
             JoinGameResult result = server.joinGame(selectedGame.gameID(), color, authToken);
+            ChessBoardRenderer.drawBoard(color.equals("white"));
             return "Joined the game '" + selectedGame.gameName() + "' as the " + color + " player.";
         } catch (ResponseException ex) {
             return "Failed to join game: " + ex.getMessage();
@@ -230,7 +238,8 @@ public class Client {
             selectedGame = availableGames.get(Integer.parseInt(gameNumberResponse)-1);
         }
         try {
-            return server.observeGame(selectedGame.gameID(), authToken);
+            ChessBoardRenderer.drawBoard(true);
+            return server.observeGame(selectedGame.gameID(), selectedGame.gameName(), authToken);
         } catch (ResponseException ex) {
             return "Failed to observe game: " + ex.getMessage();
         }

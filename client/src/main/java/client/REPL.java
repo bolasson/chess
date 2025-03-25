@@ -1,5 +1,7 @@
 package client;
 
+import ui.EscapeSequences;
+
 import java.util.Scanner;
 
 public class REPL {
@@ -14,7 +16,11 @@ public class REPL {
         Scanner scanner = new Scanner(System.in);
         String input;
         do {
-            System.out.print(">>> ");
+            String userText = EscapeSequences.SET_TEXT_COLOR_RED + client.currentState;
+            if (client.currentState == Client.State.LOGGED_IN) {
+                userText = EscapeSequences.SET_TEXT_COLOR_GREEN + client.username;
+            }
+            System.out.print("[" + userText + EscapeSequences.RESET_TEXT_COLOR + "] >>> ");
             input = scanner.nextLine();
             String output = client.evaluateCommand(input, scanner);
             if (output == null || !output.isEmpty()) {

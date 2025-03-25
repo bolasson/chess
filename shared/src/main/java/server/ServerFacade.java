@@ -71,8 +71,11 @@ public class ServerFacade {
         return result;
     }
 
-    public String observeGame(int gameId, String authToken) throws ResponseException {
-        return "Observing game " + gameId;
+    public String observeGame(int gameId, String gameName, String authToken) throws ResponseException {
+        if (authToken.isEmpty()) {
+            throw new ResponseException(401, "You are unauthorized to perform this operation");
+        }
+        return "Observing the game '" + gameName + "'";
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
