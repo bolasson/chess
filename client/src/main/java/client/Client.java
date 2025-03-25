@@ -1,10 +1,11 @@
 package client;
 
+import model.GameData;
 import results.*;
 import server.ServerFacade;
 import server.ResponseException;
-import model.AuthData;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,60 +17,40 @@ public class Client {
     }
 
     private State currentState;
-    private final String serverURL;
-    private ServerFacade server;
+    private final ServerFacade server;
     private String authToken = "";
-    private static final List<String> quitStrings = Arrays.asList("quit", "exit", "stop", "close", "q", "e", "s","c");
+    private final List<String> quitStrings = Arrays.asList("quit", "exit", "stop", "close", "q", "e", "s","c");
+    private List<GameData> availableGames = new ArrayList<GameData>();
 
     public Client(String serverURL) {
         this.server = new ServerFacade(serverURL);
-        this.serverURL = serverURL;
         this.currentState = State.PRELOGIN;
     }
 
     public String evaluateCommand(String input, java.util.Scanner scanner) {
         String command = input.trim().toLowerCase();
         if (currentState == State.PRELOGIN) {
-            switch (command) {
-                case "h":
-                case "-h":
-                case "help":
-                    return getHelpText();
-                case "q":
-                case "quit":
-                case "exit":
-                    return "";
-                case "login":
-                    return login(scanner);
-                case "register":
-                    return register(scanner);
-                default:
-                    return "Unknown command. Type 'help' for available commands.";
-            }
+            return switch (command) {
+                case "help", "h" -> getHelpText();
+                case "quit", "q", "exit", "e" -> "";
+                case "login", "l" -> login(scanner);
+                case "register", "r" -> register(scanner);
+                default -> "Unknown command. Type 'help' for available commands.";
+            };
         } else {
-            switch (command) {
-                case "h":
-                case "-h":
-                case "help":
-                    return getHelpText();
-                case "logout":
-                    return logout();
-                case "q":
-                case "quit":
-                case "exit":
+            return switch (command) {
+                case "help", "h" -> getHelpText();
+                case "logout" -> logout();
+                case "quit", "q", "exit", "e" -> {
                     logout();
-                    return "";
-                case "create game":
-                    return createGame(scanner);
-                case "list games":
-                    return listGames();
-                case "play game":
-                    return playGame(scanner);
-                case "observe game":
-                    return observeGame(scanner);
-                default:
-                    return "Unknown command. Type 'help' for available commands.";
-            }
+                    yield "";
+                }
+                case "create game", "create", "c" -> createGame(scanner);
+                case "list games", "list", "l" -> listGames();
+                case "play game", "play", "join game", "join", "p", "j" -> playGame(scanner);
+                case "observe game", "observe", "o" -> observeGame(scanner);
+                default -> "Unknown command. Type 'help' for available commands.";
+            };
         }
     }
 
@@ -142,7 +123,17 @@ public class Client {
         System.out.print("Enter game name: ");
         String gameName = scanner.nextLine();
         try {
-            return "Game created with name " + server.createGame(gameName, authToken).gameName();
+            CreateGameResult createGameResult = server.createGame(gameName, authToken);
+            ListGamesResult listGamesResult = server.listGames(authToken);
+            UpdateGameList(listGamesResult.games());
+            int createGameIndex = 0;
+            for (int i = 0; i < availableGames.size(); i++) {
+                if (availableGames.get(i).gameID() == createGameResult.gameID()) {
+                    createGameIndex = i+1;
+                    break;
+                }
+            }
+            return "Game created with name " + createGameResult.gameName() + ".\nTo join this game, enter the command 'play game', then enter " + createGameIndex;
         } catch (ResponseException ex) {
             return "Failed to create game: " + ex.getMessage();
         }
@@ -150,14 +141,21 @@ public class Client {
 
     private String listGames() {
         try {
-            List<String> games = server.listGames(authToken);
-            for (String game : games) {
-                System.out.println(game);
+            ListGamesResult result = server.listGames(authToken);
+            UpdateGameList(result.games());
+            for (int i = 0; i < availableGames.size(); i++) {
+                GameData game = availableGames.get(i);
+                System.out.println((i+1) + game.toString());
             }
             return "\nTo join a game, enter 'play game' then provide the game number from the list above.";
         } catch (ResponseException ex) {
             return "Failed to list games: " + ex.getMessage();
         }
+    }
+
+    private void UpdateGameList(List<GameData> games) {
+        availableGames.clear();
+        availableGames = games;
     }
 
     private String playGame(java.util.Scanner scanner) {
