@@ -136,12 +136,27 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void testJoinGameFailureInvalidColor() throws ResponseException {
+    public void joinGameFailureInvalidColor() throws ResponseException {
         RegisterResult reg = facade.register("user1", "toomanysecrets", "user1@example.com");
         String authToken = reg.authToken();
         CreateGameResult gameResult = facade.createGame("Test Game", authToken);
         int gameId = gameResult.gameID();
         ResponseException ex = assertThrows(ResponseException.class, () -> facade.joinGame(gameId, "byublue", authToken));
         assertTrue(ex.getMessage().toLowerCase().contains("color"), "Expected error message regarding invalid color");
+    }
+
+    @Test
+    public void observeGameSuccess() throws ResponseException {
+        RegisterResult reg = facade.register("user1", "toomanysecrets", "user1@example.com");
+        String authToken = reg.authToken();
+        CreateGameResult gameResult = facade.createGame("Test Game", authToken);
+        String response = facade.observeGame(gameResult.gameID(), "Test Game", authToken);
+        assertTrue(response.contains("Observing the game"), "Expected observe game message to contain observing info");
+    }
+
+    @Test
+    public void observeGameFailureUnauthorized() {
+        ResponseException ex = assertThrows(ResponseException.class, () -> facade.observeGame(1, "Any Game", ""));
+        assertTrue(ex.getMessage().toLowerCase().contains("unauthorized"), "Expected error message about unauthorized operation");
     }
 }
