@@ -1,11 +1,14 @@
 package server;
 
 import com.google.gson.Gson;
+import model.GameData;
 import requests.*;
 import results.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerFacade {
     private final String serverURL;
@@ -50,8 +53,19 @@ public class ServerFacade {
         return result;
     }
 
-    public String listGames(String authToken) {
-        return "Active games [Game1, Game2, Game3]" + "\n";
+    public List<String> listGames(String authToken) throws ResponseException {
+        ListGamesResult result = makeRequest("GET", "/game", null, ListGamesResult.class, authToken);
+        if (!result.success()) {
+            throw new ResponseException(400, result.message());
+        }
+        List<String> games = new ArrayList<>();
+        int entryID = 0;
+        for (GameData game : result.games()) {
+            entryID++;
+            games.add(entryID + ": " + game.gameName() + "\n- White Player: " + game.whiteUsername() + "\n- Black Player: " + game.blackUsername());
+        }
+
+        return games;
     }
 
     public String joinGame(int gameId, String color, String authToken) {

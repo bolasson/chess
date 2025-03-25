@@ -1,8 +1,6 @@
 package client;
 
-import results.LoginResult;
-import results.LogoutResult;
-import results.RegisterResult;
+import results.*;
 import server.ServerFacade;
 import server.ResponseException;
 import model.AuthData;
@@ -151,7 +149,15 @@ public class Client {
     }
 
     private String listGames() {
-        return server.listGames(authToken);
+        try {
+            List<String> games = server.listGames(authToken);
+            for (String game : games) {
+                System.out.println(game);
+            }
+            return "\nTo join a game, enter 'play game' then provide the game number from the list above.";
+        } catch (ResponseException ex) {
+            return "Failed to list games: " + ex.getMessage();
+        }
     }
 
     private String playGame(java.util.Scanner scanner) {
