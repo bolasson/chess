@@ -33,11 +33,12 @@ public class ServerFacade {
         return result;
     }
 
-    public void logout(String authToken) throws ResponseException {
+    public LogoutResult logout(String authToken) throws ResponseException {
         LogoutResult result = makeRequest("DELETE", "/session", null, LogoutResult.class, authToken);
         if (!result.success()) {
             throw new ResponseException(400, result.message());
         }
+        return result;
     }
 
     public CreateGameResult createGame(String gameName, String authToken) throws ResponseException {
