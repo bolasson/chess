@@ -1,7 +1,10 @@
 package client;
 
+import results.LoginResult;
+import results.RegisterResult;
 import server.ServerFacade;
 import server.ResponseException;
+import model.AuthData;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +19,7 @@ public class Client {
     private State currentState;
     private final String serverURL;
     private ServerFacade server;
-    private String authToken = "authToken";
+    private String authToken = "";
     private static final List<String> quitStrings = Arrays.asList("quit", "exit", "stop", "close", "q", "e", "s","c");
 
     public Client(String serverURL) {
@@ -97,9 +100,10 @@ public class Client {
         String password = scanner.nextLine();
 
         try {
-            String response = server.login(username, password);
+            LoginResult response = server.login(username, password);
             currentState = State.POSTLOGIN;
-            return response + "Type 'help' to see available commands.";
+            authToken = response.authToken();
+            return "Signed in as " + response.username() + ".\nType 'help' to see available commands.";
         } catch (ResponseException ex) {
             return "Login failed: " + ex.getMessage();
         }
@@ -114,9 +118,10 @@ public class Client {
         String email = scanner.nextLine();
 
         try {
-            String response = server.register(username, password, email);
+            RegisterResult response = server.register(username, password, email);
             currentState = State.POSTLOGIN;
-            return response + "Type 'help' to see available commands.";
+            authToken = response.authToken();
+            return "Created and signed in as " + response.username() + ".\nType 'help' to see available commands.";
         } catch (ResponseException ex) {
             return "Registration failed: " + ex.getMessage();
         }
@@ -126,7 +131,9 @@ public class Client {
     private String logout() {
         try {
             currentState = State.PRELOGIN;
-            return server.logout("authToken") + "Type 'help' to see available commands.";
+            String response = server.logout(authToken);
+            authToken = "";
+            return response + "Type 'help' to see available commands.";
         } catch (ResponseException ex) {
             return "Logout failed: " + ex.getMessage();
         }
@@ -135,7 +142,11 @@ public class Client {
     private String createGame(java.util.Scanner scanner) {
         System.out.print("Enter game name: ");
         String gameName = scanner.nextLine();
-        return server.createGame(gameName, authToken);
+        try {
+            return "Game created with name " + server.createGame(gameName, authToken).gameName();
+        } catch (ResponseException ex) {
+            return "Failed to create game: " + ex.getMessage();
+        }
     }
 
     private String listGames() {

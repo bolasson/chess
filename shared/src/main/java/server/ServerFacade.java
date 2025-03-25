@@ -15,22 +15,22 @@ public class ServerFacade {
         this.serverURL = serverURL;
     }
 
-    public String login(String username, String password) throws ResponseException {
+    public LoginResult login(String username, String password) throws ResponseException {
         LoginRequest req = new LoginRequest(username, password);
         LoginResult result = makeRequest("POST", "/session", req, LoginResult.class);
         if (!result.success()) {
             throw new ResponseException(result.statusCode(), result.message());
         }
-        return "Login successful for " + username + ". AuthToken: " + result.authToken() + "\n";
+        return result;
     }
 
-    public String register(String username, String password, String email) throws ResponseException {
+    public RegisterResult register(String username, String password, String email) throws ResponseException {
         RegisterRequest req = new RegisterRequest(username, password, email);
         RegisterResult result = makeRequest("POST", "/user", req, RegisterResult.class);
         if (!result.success()) {
             throw new ResponseException(result.statusCode(), result.message());
         }
-        return "Registration successful for " + username + ". AuthToken: " + result.authToken() + "\n";
+        return result;
     }
 
     public String logout(String authToken) throws ResponseException {
@@ -41,8 +41,13 @@ public class ServerFacade {
         return "Logout successful.\n";
     }
 
-    public String createGame(String gameName, String authToken) {
-        return "Game created with name " + gameName + "\n";
+    public CreateGameResult createGame(String gameName, String authToken) throws ResponseException {
+        CreateGameRequest req = new CreateGameRequest(authToken, gameName);
+        CreateGameResult result = makeRequest("POST", "/game", req, CreateGameResult.class, authToken);
+        if (!result.success()) {
+            throw new ResponseException(400, result.message());
+        }
+        return result;
     }
 
     public String listGames(String authToken) {

@@ -30,14 +30,14 @@ public class GameService {
         try {
             AuthData authData = authDAO.getAuth(request.authToken());
             if (authData == null) {
-                return new CreateGameResult(false, "Error: unauthorized");
+                return new CreateGameResult(false, request.gameName(), "Error: unauthorized");
             }
             int gameId = generateGameId();
             GameData game = new GameData(gameId, null, null, request.gameName(), null);
             gameDAO.createGame(game);
-            return new CreateGameResult(true, gameId);
+            return new CreateGameResult(true, request.gameName(), gameId);
         } catch (Exception e) {
-            return new CreateGameResult(false, "Error: " + e.getMessage());
+            return new CreateGameResult(false,request.gameName(), "Error: " + e.getMessage());
         }
     }
 
