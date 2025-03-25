@@ -72,7 +72,7 @@ public class ServerFacade {
         if (authToken.isEmpty()) {
             throw new ResponseException("You are unauthorized to perform this operation");
         }
-        return "Observing the game '" + gameName + "' with gameID '" + gameID + "'";
+        return "Observing the game '" + gameName;
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {

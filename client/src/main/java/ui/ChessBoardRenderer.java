@@ -50,9 +50,13 @@ public class ChessBoardRenderer {
             }
         }
 
+        String[] labels = {"A", "B", "C", "D", "E", "F", "G", "H"};
+
+        printColumnLabels(labels, whitePerspective);
+
         for (int r = 0; r < 8; r++) {
             int boardRow = rowOrder[r];
-            System.out.print(EscapeSequences.RESET_TEXT_COLOR + (boardRow + 1) + " ");
+            System.out.print(" " + EscapeSequences.RESET_TEXT_COLOR + (boardRow + 1) + " ");
             for (int c = 0; c < 8; c++) {
                 int boardCol = colOrder[c];
                 String bgColor = ((boardRow + boardCol) % 2 == 0)
@@ -60,10 +64,14 @@ public class ChessBoardRenderer {
                         : EscapeSequences.SET_BG_COLOR_LIGHT_YELLOW;
                 System.out.print(bgColor + board[boardRow][boardCol] + EscapeSequences.RESET_BG_COLOR);
             }
+            System.out.print(" " + EscapeSequences.RESET_TEXT_COLOR + (boardRow + 1) + " ");
             System.out.println();
         }
 
-        String[] labels = {"A", "B", "C", "D", "E", "F", "G", "H"};
+        printColumnLabels(labels, whitePerspective);
+    }
+
+    private static void printColumnLabels(String[] labels, boolean whitePerspective) {
         if (!whitePerspective) {
             String[] reversed = new String[8];
             for (int i = 0; i < 8; i++) {
@@ -71,7 +79,7 @@ public class ChessBoardRenderer {
             }
             labels = reversed;
         }
-        System.out.print("  ");
+        System.out.print("   ");
         for (int i = 0; i < 8; i++) {
             System.out.print(EscapeSequences.RESET_TEXT_COLOR + "  " + labels[i] + "  ");
         }

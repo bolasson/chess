@@ -236,7 +236,7 @@ public class Client {
                     } catch (Exception e) {
                         throw new Exception("Input must be an integer.");
                     }
-                    if (availableGames.size() + 1 < proposedGameID) {
+                    if (availableGames.size() + 1 < proposedGameID || proposedGameID < 1) {
                         throw new Exception("Game ID is not in game list. " +
                                 "To view the game list enter '" + keyword("e") + setErrorFormating() +
                                 "xit', and then '" + keyword("l") + setErrorFormating() + "ist games'.");
