@@ -124,8 +124,12 @@ public class Client {
 
 // Postlogin Options
     private String logout() {
-        currentState = State.PRELOGIN;
-        return server.logout("authToken") + "Type 'help' to see available commands.";
+        try {
+            currentState = State.PRELOGIN;
+            return server.logout("authToken") + "Type 'help' to see available commands.";
+        } catch (ResponseException ex) {
+            return "Logout failed: " + ex.getMessage();
+        }
     }
 
     private String createGame(java.util.Scanner scanner) {

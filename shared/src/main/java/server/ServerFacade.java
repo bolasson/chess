@@ -33,8 +33,12 @@ public class ServerFacade {
         return "Registration successful for " + username + ". AuthToken: " + result.authToken() + "\n";
     }
 
-    public String logout(String authToken) {
-        return "Logout successful." + "\n";
+    public String logout(String authToken) throws ResponseException {
+        LogoutResult result = makeRequest("DELETE", "/session", null, LogoutResult.class, authToken);
+        if (!result.success()) {
+            throw new ResponseException(400, result.message());
+        }
+        return "Logout successful.\n";
     }
 
     public String createGame(String gameName, String authToken) {
