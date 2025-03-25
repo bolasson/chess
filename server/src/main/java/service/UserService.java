@@ -28,16 +28,16 @@ public class UserService {
     public RegisterResult register(RegisterRequest request) {
         try {
             if (request.username() == null || request.username().isEmpty()) {
-                return new RegisterResult(false, "A username is required", 400);
+                return new RegisterResult(false, "Error: A username is required", 400);
             }
             if (request.password() == null || request.password().isEmpty()) {
-                return new RegisterResult(false, "A password is required", 400);
+                return new RegisterResult(false, "Error: A password is required", 400);
             }
             if (request.email() == null || request.email().isEmpty()) {
-                return new RegisterResult(false, "An email is required", 400);
+                return new RegisterResult(false, "Error: An email is required", 400);
             }
             if (userDAO.userExists(request.username())) {
-                return new RegisterResult(false, "Username already taken", 403);
+                return new RegisterResult(false, "Error: Username already taken", 403);
             }
             UserData newUser = new UserData(request.username(), request.password(), request.email());
             userDAO.createUser(newUser);
@@ -53,21 +53,21 @@ public class UserService {
     public LoginResult login(LoginRequest request) {
         try {
             if (request.username() == null || request.username().isEmpty()) {
-                return new LoginResult(false, "Username is required", 400);
+                return new LoginResult(false, "Error: Username is required", 400);
             }
             if (request.password() == null || request.password().isEmpty()) {
-                return new LoginResult(false, "Password is required", 400);
+                return new LoginResult(false, "Error: Password is required", 400);
             }
             UserData user = userDAO.getUser(request.username());
             if (!BCrypt.checkpw(request.password(), user.password())) {
-                return new LoginResult(false, "Credentials are invalid", 401);
+                return new LoginResult(false, "Error: Credentials are invalid", 401);
             }
             String authToken = generateAuthToken();
             AuthData authData = new AuthData(authToken, request.username());
             authDAO.createAuth(authData);
             return new LoginResult(true, authToken, request.username());
         } catch (DataAccessException e) {
-            return new LoginResult(false, "User does not exist", 401);
+            return new LoginResult(false, "Error: User does not exist", 401);
         }
     }
 
@@ -76,7 +76,7 @@ public class UserService {
             authDAO.deleteAuth(authToken);
             return new LogoutResult(true);
         } catch (Exception e) {
-            return new LogoutResult(false, e.getMessage());
+            return new LogoutResult(false, "Error: " + e.getMessage());
         }
     }
 

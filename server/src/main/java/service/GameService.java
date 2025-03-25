@@ -30,14 +30,14 @@ public class GameService {
         try {
             AuthData authData = authDAO.getAuth(request.authToken());
             if (authData == null) {
-                return new CreateGameResult(false, request.gameName(), "Unauthorized");
+                return new CreateGameResult(false, request.gameName(), "Error: Unauthorized");
             }
             int gameId = generateGameId();
             GameData game = new GameData(gameId, null, null, request.gameName(), null);
             gameDAO.createGame(game);
             return new CreateGameResult(true, request.gameName(), gameId);
         } catch (Exception e) {
-            return new CreateGameResult(false,request.gameName(), e.getMessage());
+            return new CreateGameResult(false,request.gameName(), "Error: " + e.getMessage());
         }
     }
 
@@ -47,37 +47,37 @@ public class GameService {
             List<GameData> games = gameDAO.listGames();
             return new ListGamesResult(true, games);
         } catch (DataAccessException e) {
-            return new ListGamesResult(false, "Unauthorized");
+            return new ListGamesResult(false, "Error: Unauthorized");
         }
     }
 
     public JoinGameResult joinGame(JoinGameRequest request) {
-        JoinGameResult result = new JoinGameResult(false, "An unexpected server error occurred", 500);
+        JoinGameResult result = new JoinGameResult(false, "Error: An unexpected server error occurred", 500);
         try {
-            result = new JoinGameResult(false, "Unauthorized", 401);
+            result = new JoinGameResult(false, "Error: Unauthorized", 401);
             AuthData authData = authDAO.getAuth(request.authToken());
-            result = new JoinGameResult(false, "Game not found", 400);
+            result = new JoinGameResult(false, "Error: Game not found", 400);
             GameData game = gameDAO.getGame(request.gameID());
             if (request.playerColor() == null) {
-                return new JoinGameResult(false, "Player color is required", 400);
+                return new JoinGameResult(false, "Error: Player color is required", 400);
             }
             if (request.gameID() <= 0) {
-                return new JoinGameResult(false, "GameID is required", 400);
+                return new JoinGameResult(false, "Error: GameID is required", 400);
             }
             if (request.playerColor().equals("WHITE") && game.whiteUsername() == null) {
-                if (game.blackUsername() != null && game.blackUsername().equals(authData.username())) {
-                    return new JoinGameResult(false, "User already joined as the black player", 400);
-                }
+//                if (game.blackUsername() != null && game.blackUsername().equals(authData.username())) {
+//                    return new JoinGameResult(false, "Error: User already joined as the black player", 400);
+//                }
                 game = new GameData(game.gameID(), authData.username(), game.blackUsername(), game.gameName(), game.game());
             } else if (request.playerColor().equals("BLACK") && game.blackUsername() == null) {
-                if (game.whiteUsername() != null && game.whiteUsername().equals(authData.username())) {
-                    return new JoinGameResult(false, "User already joined as the white player", 400);
-                }
+//                if (game.whiteUsername() != null && game.whiteUsername().equals(authData.username())) {
+//                    return new JoinGameResult(false, "Error: User already joined as the white player", 400);
+//                }
                 game = new GameData(game.gameID(), game.whiteUsername(), authData.username(), game.gameName(), game.game());
             } else if (!request.playerColor().equals("WHITE") && !request.playerColor().equals("BLACK")) {
-                return new JoinGameResult(false, "Color is not valid", 400);
+                return new JoinGameResult(false, "Error: Color is not valid", 400);
             } else {
-                return new JoinGameResult(false, "Color already taken", 403);
+                return new JoinGameResult(false, "Error: Color already taken", 403);
             }
             gameDAO.updateGame(game);
             return new JoinGameResult(true);

@@ -88,7 +88,7 @@ public class UserServiceTests {
         LoginResult result = userService.login(request);
         assertFalse(result.success());
         assertNull(result.authToken());
-        assertEquals("Error: credentials are invalid", result.message());
+        assertEquals("Error: Credentials are invalid", result.message());
     }
 
     @Test
@@ -97,7 +97,7 @@ public class UserServiceTests {
         LoginResult result = userService.login(request);
         assertFalse(result.success());
         assertNull(result.authToken());
-        assertEquals("Error: user does not exist", result.message());
+        assertEquals("Error: User does not exist", result.message());
     }
 
     @Test

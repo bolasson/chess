@@ -46,7 +46,7 @@ public class AuthServiceTests {
     public void verifyAuthTokenFailureInvalidToken() {
         VerificationResult result = authService.verifyAuthToken("invalidToken");
         assertFalse(result.success());
-        assertEquals("Invalid auth token", result.usernameOrMessage());
+        assertEquals("Error: Invalid auth token", result.usernameOrMessage());
     }
 
     @Test

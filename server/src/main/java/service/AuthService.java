@@ -23,7 +23,7 @@ public class AuthService {
             AuthData authData = authDAO.getAuth(authToken);
             return new VerificationResult(true, authData.username());
         } catch (DataAccessException e) {
-            return new VerificationResult(false, "Invalid auth token");
+            return new VerificationResult(false, "Error: Invalid auth token");
         }
     }
 
@@ -43,7 +43,7 @@ public class AuthService {
             authDAO.deleteAuth(authToken);
             return new DeactivationResult(true);
         } catch (DataAccessException e) {
-            return new DeactivationResult(false, e.getMessage());
+            return new DeactivationResult(false, "Error: " + e.getMessage());
         }
     }
 }

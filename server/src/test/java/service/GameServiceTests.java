@@ -73,7 +73,7 @@ public class GameServiceTests {
     public void listGamesFailureUnauthorized() {
         ListGamesResult result = gameService.listGames("invalidAuthToken");
         assertFalse(result.success());
-        assertEquals("Error: unauthorized", result.message());
+        assertEquals("Error: Unauthorized", result.message());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class GameServiceTests {
         JoinGameRequest request = new JoinGameRequest("authToken1", 1, "WHITE");
         JoinGameResult result = gameService.joinGame(request);
         assertFalse(result.success());
-        assertEquals("Error: color already taken", result.message());
+        assertEquals("Error: Color already taken", result.message());
     }
 
     @Test
@@ -107,6 +107,6 @@ public class GameServiceTests {
         JoinGameRequest request = new JoinGameRequest("invalidAuthToken", 1, "WHITE");
         JoinGameResult result = gameService.joinGame(request);
         assertFalse(result.success());
-        assertEquals("Error: unauthorized", result.message());
+        assertEquals("Error: Unauthorized", result.message());
     }
 }
