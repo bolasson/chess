@@ -3,7 +3,7 @@ import client.REPL;
 import ui.ChessBoardRenderer;
 
 public class Main {
-    private static final boolean testboard = true;
+    private static final boolean testboard = false;
     public static void main(String[] args) {
         if (testboard) {
             boardUITesting();

@@ -1,10 +1,11 @@
-package client;
+package server;
 
 import com.google.gson.Gson;
+import requests.*;
+import results.*;
+
 import java.io.*;
 import java.net.*;
-import java.util.List;
-import model.GameData;
 
 public class ServerFacade {
     private final String serverURL;
@@ -14,12 +15,22 @@ public class ServerFacade {
         this.serverURL = serverURL;
     }
 
-    public String login(String username, String password) {
-        return "Login successful for " + username + "\n";
+    public String login(String username, String password) throws ResponseException {
+        LoginRequest req = new LoginRequest(username, password);
+        LoginResult result = makeRequest("POST", "/session", req, LoginResult.class);
+        if (!result.success()) {
+            throw new ResponseException(result.statusCode(), result.message());
+        }
+        return "Login successful for " + username + ". AuthToken: " + result.authToken() + "\n";
     }
 
-    public String register(String username, String password, String email) {
-        return "Registration successful for " + username + "\n";
+    public String register(String username, String password, String email) throws ResponseException {
+        RegisterRequest req = new RegisterRequest(username, password, email);
+        RegisterResult result = makeRequest("POST", "/user", req, RegisterResult.class);
+        if (!result.success()) {
+            throw new ResponseException(result.statusCode(), result.message());
+        }
+        return "Registration successful for " + username + ". AuthToken: " + result.authToken() + "\n";
     }
 
     public String logout(String authToken) {

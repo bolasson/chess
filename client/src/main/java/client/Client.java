@@ -1,5 +1,8 @@
 package client;
 
+import server.ServerFacade;
+import server.ResponseException;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -93,10 +96,13 @@ public class Client {
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
-        String response = server.login(username, password);
-
-        currentState = State.POSTLOGIN;
-        return response + "Type 'help' to see available commands.";
+        try {
+            String response = server.login(username, password);
+            currentState = State.POSTLOGIN;
+            return response + "Type 'help' to see available commands.";
+        } catch (ResponseException ex) {
+            return "Login failed: " + ex.getMessage();
+        }
     }
 
     private String register(java.util.Scanner scanner) {
@@ -107,10 +113,13 @@ public class Client {
         System.out.print("Enter email: ");
         String email = scanner.nextLine();
 
-        String response = server.register(username, password, email);
-
-        currentState = State.POSTLOGIN;
-        return response + "Type 'help' to see available commands.";
+        try {
+            String response = server.register(username, password, email);
+            currentState = State.POSTLOGIN;
+            return response + "Type 'help' to see available commands.";
+        } catch (ResponseException ex) {
+            return "Registration failed: " + ex.getMessage();
+        }
     }
 
 // Postlogin Options
