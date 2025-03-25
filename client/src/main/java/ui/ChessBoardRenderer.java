@@ -62,7 +62,7 @@ public class ChessBoardRenderer {
             System.out.println();
         }
 
-        String[] labels = {"a", "b", "c", "d", "e", "f", "g", "h"};
+        String[] labels = {"A", "B", "C", "D", "E", "F", "G", "H"};
         if (!whitePerspective) {
             String[] reversed = new String[8];
             for (int i = 0; i < 8; i++) {
