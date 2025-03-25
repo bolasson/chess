@@ -236,6 +236,7 @@ public class Client {
     }
 
     public static String ErrorMessage(String message) {
+        message = message.replace("Error: ", "");
         return SetErrorFormating() + message + EscapeSequences.RESET_TEXT_ITALIC + EscapeSequences.RESET_TEXT_COLOR;
     }
 
