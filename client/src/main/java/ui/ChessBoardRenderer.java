@@ -3,6 +3,7 @@ package ui;
 public class ChessBoardRenderer {
 
     public static void drawBoard(boolean whitePerspective) {
+        System.out.println();
         String[][] board = new String[8][8];
 
         board[0][0] = EscapeSequences.SET_TEXT_COLOR_BLACK + EscapeSequences.WHITE_ROOK;

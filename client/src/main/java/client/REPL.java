@@ -12,7 +12,7 @@ public class REPL {
     }
 
     public void run() {
-        System.out.println("Welcome to my chess application. Type 'help' to see available commands.");
+        System.out.println("Welcome to my chess application. Type '" + Client.Keyword("h") + "elp' to see available commands.");
         Scanner scanner = new Scanner(System.in);
         String input;
         do {
@@ -29,7 +29,7 @@ public class REPL {
                 break;
             }
         } while (!input.equalsIgnoreCase("quit"));
-        System.out.println("Exiting application. Goodbye!");
+        System.out.println("Exiting application. Goodbye!\n");
         scanner.close();
     }
 }

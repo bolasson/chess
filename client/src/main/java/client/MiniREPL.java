@@ -1,5 +1,7 @@
 package client;
 
+import ui.EscapeSequences;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class MiniREPL {
     }
 
     public String run(java.util.Scanner scanner) {
-        System.out.println(prompt);
+        System.out.print(prompt);
         String input = scanner.nextLine();
         while (true) {
             try {
@@ -25,7 +27,7 @@ public class MiniREPL {
                     break;
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage() + "\n" + prompt);
+                System.out.print(Client.ErrorMessage(e.getMessage()) + "\n" + prompt);
                 input = scanner.nextLine();
             }
         }

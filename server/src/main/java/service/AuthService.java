@@ -34,7 +34,7 @@ public class AuthService {
             authDAO.createAuth(authData);
             return new GenerationResult(true, newAuthToken);
         } catch (DataAccessException e) {
-            return new GenerationResult(false, "Error: " + e.getMessage());
+            return new GenerationResult(false, e.getMessage());
         }
     }
 
@@ -43,7 +43,7 @@ public class AuthService {
             authDAO.deleteAuth(authToken);
             return new DeactivationResult(true);
         } catch (DataAccessException e) {
-            return new DeactivationResult(false, "Error: " + e.getMessage());
+            return new DeactivationResult(false, e.getMessage());
         }
     }
 }
