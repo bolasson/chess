@@ -12,8 +12,8 @@ import java.util.List;
 public class Client {
 
     private enum State {
-        PRELOGIN,
-        POSTLOGIN
+        PRE_LOGIN,
+        POST_LOGIN
     }
 
     private State currentState;
@@ -24,12 +24,12 @@ public class Client {
 
     public Client(String serverURL) {
         this.server = new ServerFacade(serverURL);
-        this.currentState = State.PRELOGIN;
+        this.currentState = State.PRE_LOGIN;
     }
 
     public String evaluateCommand(String input, java.util.Scanner scanner) {
         String command = input.trim().toLowerCase();
-        if (currentState == State.PRELOGIN) {
+        if (currentState == State.PRE_LOGIN) {
             return switch (command) {
                 case "help", "h" -> getHelpText();
                 case "quit", "q", "exit", "e" -> "";
@@ -55,7 +55,7 @@ public class Client {
     }
 
     private String getHelpText() {
-        if (currentState == State.PRELOGIN) {
+        if (currentState == State.PRE_LOGIN) {
             return "Prelogin Commands:\n" +
                     "- help: Display this help text\n" +
                     "- quit: Exit the application\n" +
@@ -81,7 +81,7 @@ public class Client {
 
         try {
             LoginResult response = server.login(username, password);
-            currentState = State.POSTLOGIN;
+            currentState = State.POST_LOGIN;
             authToken = response.authToken();
             UpdateGameList();
             return "Signed in as " + response.username() + ".\nType 'help' to see available commands.";
@@ -100,7 +100,7 @@ public class Client {
 
         try {
             RegisterResult response = server.register(username, password, email);
-            currentState = State.POSTLOGIN;
+            currentState = State.POST_LOGIN;
             authToken = response.authToken();
             UpdateGameList();
             return "Created and signed in as " + response.username() + ".\nType 'help' to see available commands.";
@@ -112,7 +112,7 @@ public class Client {
 // Postlogin Options
     private String logout() {
         try {
-            currentState = State.PRELOGIN;
+            currentState = State.PRE_LOGIN;
             LogoutResult response = server.logout(authToken);
             authToken = "";
             return response.message() + ".\nType 'help' to see available commands.";
@@ -161,7 +161,6 @@ public class Client {
 
     private String playGame(java.util.Scanner scanner) {
         MiniREPL gameNumberREPL = new MiniREPL("Enter game number: ",
-                "Invalid game number. Please enter a valid integer.",
                 new ValidateInput() {
                     @Override
                     public String isValid(String input) throws Exception {
@@ -185,11 +184,17 @@ public class Client {
             selectedGame = availableGames.get(Integer.parseInt(gameNumberResponse)-1);
         }
 
-        System.out.print("Enter desired color (white/black): ");
-        String color = scanner.nextLine().toLowerCase();
-        if (!color.equals("white") && !color.equals("w") && !color.equals("black") && !color.equals("b")) {
-            return "Invalid color. Please enter 'white' or 'black'.";
-        }
+        MiniREPL colorREPL = new MiniREPL("Enter desired color (white/black): ",
+                new ValidateInput() {
+                    @Override
+                    public String isValid(String input) throws Exception {
+                        if (!MiniREPL.listContainsValue(Arrays.asList("white", "w", "black", "b"),input)) {
+                            throw new Exception("Invalid color. Please enter 'white' or 'black'.");
+                        }
+                        return "valid";
+                    }
+                });
+        String color = colorREPL.run(scanner);
         if (color.equals("w")) color = "white";
         if (color.equals("b")) color = "black";
         try {
@@ -201,24 +206,31 @@ public class Client {
     }
 
     private String observeGame(java.util.Scanner scanner) {
-        System.out.print("Enter game number to observe: ");
-        String gameNumberStr = scanner.nextLine();
-        int gameNumber;
-        while (true) {
-            try {
-                String finalGameNumberStr = gameNumberStr;
-                if (quitStrings.stream().anyMatch(s -> s.equalsIgnoreCase(finalGameNumberStr))) {
-                    return "Leaving observe game operation.";
-                }
-                gameNumber = Integer.parseInt(gameNumberStr);
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid game number. Please enter a valid integer.");
-                gameNumberStr = scanner.nextLine();
-            }
+        MiniREPL gameNumberREPL = new MiniREPL("Enter the number of the game you want to observe: ",
+                new ValidateInput() {
+                    @Override
+                    public String isValid(String input) throws Exception {
+                        int proposedGameID = 0;
+                        try {
+                            proposedGameID = Integer.parseInt(input);
+                        } catch (Exception e) {
+                            throw new Exception("Input must be an integer.");
+                        }
+                        if (availableGames.size() + 1 < proposedGameID) {
+                            throw new Exception("Game ID is not in game list. To view the game list enter 'exit', and then 'list games'.");
+                        }
+                        return "valid";
+                    }
+                });
+        String gameNumberResponse = gameNumberREPL.run(scanner);
+        GameData selectedGame = null;
+        if (gameNumberResponse.equalsIgnoreCase("quit")) {
+            return "The user quit the operation early.";
+        } else {
+            selectedGame = availableGames.get(Integer.parseInt(gameNumberResponse)-1);
         }
         try {
-            return server.observeGame(gameNumber, authToken);
+            return server.observeGame(selectedGame.gameID(), authToken);
         } catch (ResponseException ex) {
             return "Failed to observe game: " + ex.getMessage();
         }

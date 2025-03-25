@@ -70,7 +70,6 @@ public class GameService {
                 }
                 game = new GameData(game.gameID(), authData.username(), game.blackUsername(), game.gameName(), game.game());
             } else if (request.playerColor().equals("BLACK") && game.blackUsername() == null) {
-                System.out.println(game.whiteUsername());
                 if (game.whiteUsername() != null && game.whiteUsername().equals(authData.username())) {
                     return new JoinGameResult(false, "User already joined as the white player", 400);
                 }

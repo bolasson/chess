@@ -5,13 +5,11 @@ import java.util.List;
 
 public class MiniREPL {
     private final String prompt;
-    private final String invalidPrompt;
     private final ValidateInput validateInput;
     private final List<String> exitValues = Arrays.asList("quit", "exit", "stop", "close", "q", "e", "s","c");
 
-    public MiniREPL(String prompt, String invalidPrompt, ValidateInput validateInput) {
+    public MiniREPL(String prompt, ValidateInput validateInput) {
         this.prompt = prompt;
-        this.invalidPrompt = invalidPrompt;
         this.validateInput = validateInput;
     }
 
@@ -20,8 +18,7 @@ public class MiniREPL {
         String input = scanner.nextLine();
         while (true) {
             try {
-                String testInput = input;
-                if (exitValues.stream().anyMatch(s -> s.equalsIgnoreCase(testInput))) {
+                if (listContainsValue(exitValues, input)) {
                     return "quit";
                 }
                 if (validateInput.isValid(input).equals("valid")) {
@@ -33,5 +30,9 @@ public class MiniREPL {
             }
         }
         return input;
+    }
+
+    public static boolean listContainsValue(List<String> list, String value) {
+        return list.stream().anyMatch(s -> s.equalsIgnoreCase(value));
     }
 }
