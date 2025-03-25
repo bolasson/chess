@@ -62,12 +62,17 @@ public class ServerFacade {
         return result;
     }
 
-    public String joinGame(int gameId, String color, String authToken) {
-        return "Joined game with gameID " + gameId + " as " + color + "\n";
+    public JoinGameResult joinGame(int gameId, String color, String authToken) throws ResponseException {
+        JoinGameRequest req = new JoinGameRequest(authToken, gameId, color.toUpperCase());
+        JoinGameResult result = makeRequest("PUT", "/game", req, JoinGameResult.class, authToken);
+        if (!result.success()) {
+            throw new ResponseException(result.statusCode(), result.message());
+        }
+        return result;
     }
 
-    public String observeGame(int gameID, String authToken) {
-        return "Observing game with gameID " + gameID + "\n";
+    public String observeGame(int gameId, String authToken) throws ResponseException {
+        return "Observing game " + gameId;
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {

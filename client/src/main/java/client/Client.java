@@ -168,7 +168,6 @@ public class Client {
                 if (quitStrings.stream().anyMatch(s -> s.equalsIgnoreCase(finalGameNumberStr))) {
                     return "Leaving play game operation.";
                 }
-
                 gameNumber = Integer.parseInt(gameNumberStr);
                 break;
             } catch (NumberFormatException e) {
@@ -183,7 +182,11 @@ public class Client {
         }
         if (color.equals("w")) color = "white";
         if (color.equals("b")) color = "black";
-        return server.joinGame(gameNumber, color, authToken);
+        try {
+            return server.joinGame(gameNumber, color, authToken).message();
+        } catch (ResponseException ex) {
+            return "Failed to join game: " + ex.getMessage();
+        }
     }
 
     private String observeGame(java.util.Scanner scanner) {
@@ -196,7 +199,6 @@ public class Client {
                 if (quitStrings.stream().anyMatch(s -> s.equalsIgnoreCase(finalGameNumberStr))) {
                     return "Leaving observe game operation.";
                 }
-
                 gameNumber = Integer.parseInt(gameNumberStr);
                 break;
             } catch (NumberFormatException e) {
@@ -204,6 +206,10 @@ public class Client {
                 gameNumberStr = scanner.nextLine();
             }
         }
-        return server.observeGame(gameNumber, authToken);
+        try {
+            return server.observeGame(gameNumber, authToken);
+        } catch (ResponseException ex) {
+            return "Failed to observe game: " + ex.getMessage();
+        }
     }
 }
