@@ -52,8 +52,6 @@ public class ChessBoardRenderer {
 
         String[] labels = {"A", "B", "C", "D", "E", "F", "G", "H"};
 
-        // printColumnLabels(labels, whitePerspective);
-
         for (int r = 0; r < 8; r++) {
             int boardRow = rowOrder[r];
             System.out.print(" " + EscapeSequences.RESET_TEXT_COLOR + (boardRow + 1) + " ");
