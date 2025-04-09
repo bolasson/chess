@@ -3,6 +3,7 @@ package websocket;
 import com.google.gson.Gson;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
+import chess.*;
 
 public class WebsocketTestClient implements ServerMessageObserver {
 
@@ -29,6 +30,20 @@ public class WebsocketTestClient implements ServerMessageObserver {
         communicator.sendMessage(command);
     }
 
+    public void sendMakeMove() throws Exception {
+        ChessPosition start = new ChessPosition(2, 2);
+        ChessPosition end = new ChessPosition(3, 2);
+        ChessMove move = new ChessMove(start, end, null);
+        UserGameCommand command = new UserGameCommand(
+                UserGameCommand.CommandType.MAKE_MOVE,
+                "testAuthToken",
+                1,
+                move
+        );
+        System.out.println("Client sending MAKE_MOVE: " + gson.toJson(command));
+        communicator.sendMessage(command);
+    }
+
     public void close() throws Exception {
         communicator.close();
     }
@@ -38,6 +53,8 @@ public class WebsocketTestClient implements ServerMessageObserver {
             WebsocketTestClient testClient = new WebsocketTestClient("ws://localhost:8080/ws");
             Thread.sleep(1000);
             testClient.sendTestMessage();
+            Thread.sleep(2000);
+            testClient.sendMakeMove();
             Thread.sleep(3000);
             testClient.close();
         } catch (Exception e) {

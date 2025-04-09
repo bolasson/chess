@@ -15,6 +15,7 @@ public class GameWebsocketHandler {
 
     private final Gson gson = new Gson();
     private static final Set<Session> sessions = ConcurrentHashMap.newKeySet();
+    private static ChessGame currentGame;
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
@@ -31,7 +32,7 @@ public class GameWebsocketHandler {
                 handleConnect(session, command);
                 break;
             case UserGameCommand.CommandType.MAKE_MOVE:
-                sendError(session, "MAKE_MOVE not implemented yet.");
+                handleMakeMove(session, command);
                 break;
             case UserGameCommand.CommandType.LEAVE:
                 sendNotification("A player has left the game.");
@@ -45,13 +46,35 @@ public class GameWebsocketHandler {
     }
 
     private void handleConnect(Session session, UserGameCommand command) throws Exception {
-        ChessBoard board = new ChessBoard();
-        board.resetBoard();
-        ChessGame game = new ChessGame(board, ChessGame.TeamColor.WHITE);
-        LoadGameMessage loadMsg = new LoadGameMessage(game);
+        if (currentGame == null) {
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            currentGame = new ChessGame(board, ChessGame.TeamColor.WHITE);
+        }
+        LoadGameMessage loadMsg = new LoadGameMessage(currentGame);
         String json = gson.toJson(loadMsg);
         session.getRemote().sendString(json);
         sendNotification("A new player has connected.");
+    }
+
+    private void handleMakeMove(Session session, UserGameCommand command) throws Exception {
+        if (command.getMove() == null) {
+            sendError(session, "No move provided.");
+            return;
+        }
+        try {
+            currentGame.makeMove(command.getMove());
+            LoadGameMessage loadMsg = new LoadGameMessage(currentGame);
+            String json = gson.toJson(loadMsg);
+            for (Session s : sessions) {
+                if (s.isOpen()) {
+                    s.getRemote().sendString(json);
+                }
+            }
+            sendNotification("A move has been made.");
+        } catch (Exception e) {
+            sendError(session, e.getMessage());
+        }
     }
 
     private void sendNotification(String note) throws Exception {
