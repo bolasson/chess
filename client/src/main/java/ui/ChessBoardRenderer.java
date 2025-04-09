@@ -52,7 +52,7 @@ public class ChessBoardRenderer {
 
         String[] labels = {"A", "B", "C", "D", "E", "F", "G", "H"};
 
-        printColumnLabels(labels, whitePerspective);
+        // printColumnLabels(labels, whitePerspective);
 
         for (int r = 0; r < 8; r++) {
             int boardRow = rowOrder[r];
@@ -68,7 +68,7 @@ public class ChessBoardRenderer {
             System.out.println();
         }
 
-        printColumnLabels(labels, whitePerspective);
+         printColumnLabels(labels, whitePerspective);
     }
 
     private static void printColumnLabels(String[] labels, boolean whitePerspective) {
